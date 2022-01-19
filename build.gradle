@@ -11,6 +11,7 @@ sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 ext {
@@ -19,7 +20,10 @@ ext {
 
 dependencies {
     implementation 'com.vaadin:vaadin-spring-boot-starter'
+    implementation 'org.projectlombok:lombok:1.18.22'
+    implementation 'org.jetbrains:annotations:22.0.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 dependencyManagement {
