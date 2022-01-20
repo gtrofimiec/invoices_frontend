@@ -34,12 +34,15 @@ public class CeidgApiClient {
         try {
             CeidgApiDto resEntity = restTemplate.getForObject(url, CeidgApiDto.class);
 
-            return new CeidgApiDto(resEntity.getFullName(),
+            CeidgApiDto newCeidgApiDto = new CeidgApiDto(resEntity.getFullName(),
                     resEntity.getStreet(),
                     resEntity.getBuilding(),
                     resEntity.getPostCode(),
                     resEntity.getTown());
-
+            if(resEntity.getFullName() != null) {
+                LOGGER.info("Customer data from CEIDG database was succesfully get");
+            }
+            return newCeidgApiDto;
         } catch (RestClientException e) {
             LOGGER.error(e.getMessage(), e);
             return null;

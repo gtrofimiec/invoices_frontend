@@ -2,7 +2,6 @@ package com.myprojects.invoices_frontend.domain.dtos;
 
 import com.fasterxml.jackson.annotation.*;
 
-import javax.annotation.Generated;
 import java.util.HashMap;
 import java.util.Map;
 

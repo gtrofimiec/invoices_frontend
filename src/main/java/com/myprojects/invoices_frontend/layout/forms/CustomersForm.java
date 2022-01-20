@@ -6,66 +6,78 @@ import com.myprojects.invoices_frontend.apis.postcodeapi.PostcodeApiService;
 import com.myprojects.invoices_frontend.domain.Customers;
 import com.myprojects.invoices_frontend.domain.dtos.CeidgApiDto;
 import com.myprojects.invoices_frontend.services.CustomersService;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.converter.StringToLongConverter;
+import com.vaadin.flow.data.binder.PropertyId;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomersForm extends FormLayout {
 
-    private TextField txtTd = new TextField("Id");
+    @PropertyId("fullName")
     private TextField txtFullName = new TextField("Pełna nazwa");
-    private TextField txtNip = new TextField("NIP (tylko cyfry)", "2367852376", "2367852376");
+    @PropertyId("nip")
+    private TextField txtNip = new TextField("NIP (tylko cyfry)", "5631858410", "2367852376");
+    @PropertyId("street")
     private TextField txtStreet = new TextField("Ulica");
+    @PropertyId("postcode")
     private TextField txtPostcode = new TextField("Kod pocztowy");
+    @PropertyId("town")
     private TextField txtTown = new TextField("Miejscowość");
     private Button btnSave = new Button("Zapisz");
     private Button btnDelete = new Button("Usuń");
+    private Button btnCancel = new Button("Anuluj");
     private Button btnGetFromCEIDG = new Button("Pobierz z CEIDG");
     private Binder<Customers> binder = new Binder<>(Customers.class);
     private MainView mainView;
-    private CustomersService service = CustomersService.getInstance();
+    private CustomersService customersService = CustomersService.getInstance();
     private final PostcodeApiService postcodeApiService = PostcodeApiService.getInstance();
     private final CeidgApiService ceidgApiService = CeidgApiService.getInstance();
 
     public CustomersForm(MainView mainView) {
         this.mainView = mainView;
-        HorizontalLayout buttons = new HorizontalLayout(btnSave, btnDelete);
+        HorizontalLayout buttons = new HorizontalLayout(btnSave, btnDelete, btnCancel);
         HorizontalLayout nip = new HorizontalLayout(txtNip, btnGetFromCEIDG);
         btnSave.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        btnDelete.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        btnCancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         btnGetFromCEIDG.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         txtTown.addFocusListener(event -> getTownFromPostcode(txtPostcode.getValue()));
         btnGetFromCEIDG.addClickListener(event -> getFromCEIDG(txtNip.getValue()));
         add(nip, txtFullName, txtStreet, txtPostcode, txtTown, buttons);
-        btnSave.addClickListener(event -> save());
-        btnDelete.addClickListener(event -> delete());
-        binder.forField(txtTd)
-                .withNullRepresentation("")
-                .withConverter(new StringToLongConverter("No long value"))
-                .bind(Customers::getId, Customers::setId);
+        btnSave.addClickListener(event -> saveCustomer());
+        btnDelete.addClickListener(event -> deleteCustomer());
+        btnCancel.addClickListener(event -> cancel());
         binder.bindInstanceFields(this);
     }
 
-    private void save() {
+    private void saveCustomer() {
         Customers customer = binder.getBean();
-        service.save(customer);
-        mainView.refresh();
-        update(null);
+        if (customer.getId() != null) {
+            customersService.updateCustomer(customer);
+        } else {
+            customersService.saveCustomer(customer);
+        }
+            mainView.refresh();
+        updateForm(customer);
     }
 
-    private void delete() {
+    private void deleteCustomer() {
         Customers customer = binder.getBean();
-        service.delete(customer);
+        customersService.deleteCustomer(customer);
         mainView.refresh();
-        update(null);
+        updateForm(null);
     }
 
-    public void update(Customers customer) {
+    private void cancel() {
+        this.setVisible(false);
+    }
+
+    public void updateForm(Customers customer) {
         binder.setBean(customer);
         if (customer == null) {
             setVisible(false);
@@ -81,6 +93,7 @@ public class CustomersForm extends FormLayout {
     }
 
     private void getFromCEIDG(String nip) {
+        binder.getFields().forEach(HasValue::clear);
         CeidgApiDto customerData = ceidgApiService.getData(nip);
             txtFullName.setValue(customerData.getFullName());
             txtStreet.setValue(customerData.getStreet() + " " + customerData.getBuilding());

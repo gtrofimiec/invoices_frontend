@@ -79,7 +79,7 @@ public class MainView extends VerticalLayout {
 
         btnAddNewCustomer.addClickListener(e -> {
             gridCustomers.asSingleSelect().clear();
-            customersForm.update(new Customers());
+            customersForm.updateForm(new Customers());
         });
         btnAddNewProduct.addClickListener(e -> {
             gridProducts.asSingleSelect().clear();
@@ -108,14 +108,14 @@ public class MainView extends VerticalLayout {
         gridUser.setSizeFull();
 
         add(mainToolbar, itemsToolbar, mainContent);
-        customersForm.update(null);
+        customersForm.updateForm(null);
         productsForm.update(null);
         invoicesForm.update(null);
         userForm.update(null);
         setSizeFull();
         refresh();
 
-        gridCustomers.asSingleSelect().addValueChangeListener(event -> customersForm.update(
+        gridCustomers.asSingleSelect().addValueChangeListener(event -> customersForm.updateForm(
                 gridCustomers.asSingleSelect().getValue()));
         gridProducts.asSingleSelect().addValueChangeListener(event -> productsForm.update(
                 gridProducts.asSingleSelect().getValue()));

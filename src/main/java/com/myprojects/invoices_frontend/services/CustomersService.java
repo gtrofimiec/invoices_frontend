@@ -1,11 +1,15 @@
 package com.myprojects.invoices_frontend.services;
 
+import com.myprojects.invoices_frontend.clients.CustomersClient;
 import com.myprojects.invoices_frontend.domain.Customers;
+import com.myprojects.invoices_frontend.domain.dtos.CustomersDto;
+import com.myprojects.invoices_frontend.mappers.CustomersMapper;
 import com.vaadin.flow.data.binder.Binder;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,17 +17,19 @@ import java.util.stream.Collectors;
 @Service
 public class CustomersService {
 
-    private Set<Customers> customers;
+    private List<Customers> customers;
+    private static CustomersClient customersClient;
     private static CustomersService customersService;
+    private static CustomersMapper customersMapper = new CustomersMapper();
     private Binder<Customers> binder = new Binder<>(Customers.class);
 
-    public CustomersService() {
-        this.customers = getCustomers();
+    public CustomersService(CustomersClient customersClient) {
+        CustomersService.customersClient = customersClient;
     }
 
     public static CustomersService getInstance() {
         if (customersService == null) {
-            customersService = new CustomersService();
+            customersService = new CustomersService(customersClient);
         }
         return customersService;
     }
@@ -34,18 +40,19 @@ public class CustomersService {
                 .collect(Collectors.toSet());
     }
 
-    public Set<Customers> getCustomers() {
-        Set<Customers> customers = new HashSet<>();
-        customers.add(new Customers(1L, "Jan Kowalski", "5630016732", "Wesoła",
-                "25-847", "Miasteczko"));
-        return customers;
+    public List<Customers> getCustomers() {
+        return customersMapper.mapToCustomersList(customersClient.getCustomers());
     }
 
-    public void save(Customers customer) {
-        this.customers.add(customer);
+    public void saveCustomer(Customers customer) {
+        customersClient.saveCustomer(customersMapper.mapToCustomerDto(customer));
     }
 
-    public void delete(Customers customer) {
-        this.customers.remove(customer);
+    public void updateCustomer(Customers customer) {
+        customersClient.updateCustomer(customersMapper.mapToCustomerDto(customer));
+    }
+
+    public void deleteCustomer(@NotNull Customers customer) {
+        customersClient.deleteCustomer(customersMapper.mapToCustomerDto(customer));
     }
 }

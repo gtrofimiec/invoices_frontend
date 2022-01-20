@@ -34,7 +34,9 @@ public class PostcodeApiClient {
 
         try {
             PostcodeApiDto townResponse = restTemplate.getForObject(url, PostcodeApiDto.class);
-
+            if(townResponse.getTown() != null) {
+                LOGGER.info("Town name from postcode database was succesfully get");
+            }
             return new PostcodeApiDto(townResponse.getTown());
         } catch (ResponseStatusException | ResourceAccessException e) {
             LOGGER.error(e.getMessage());

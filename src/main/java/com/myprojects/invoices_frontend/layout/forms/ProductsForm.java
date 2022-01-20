@@ -12,7 +12,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.converter.StringToBigDecimalConverter;
-import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.converter.StringToLongConverter;
 
 public class ProductsForm extends FormLayout {
@@ -36,10 +35,10 @@ public class ProductsForm extends FormLayout {
         add(txtName, cmbVatRate, txtNetPrice, txtVatValue, txtGrossPrice, buttons);
         btnSave.addClickListener(event -> save());
         btnDelete.addClickListener(event -> delete());
-        binder.forField(txtId)
-                .withNullRepresentation("")
-                .withConverter(new StringToLongConverter("Not a long value"))
-                .bind(Products::getId, Products::setId);
+//        binder.forField(txtId)
+//                .withNullRepresentation("")
+//                .withConverter(new StringToLongConverter("Not a long value"))
+//                .bind(Products::getId, Products::setId);
         binder.forField(txtNetPrice)
                 .withNullRepresentation("")
                 .withConverter(new StringToBigDecimalConverter("Not a bigdecimal value"))
