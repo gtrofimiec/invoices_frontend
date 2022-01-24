@@ -3,7 +3,7 @@ package com.myprojects.invoices_frontend;
 import com.myprojects.invoices_frontend.domain.Customers;
 import com.myprojects.invoices_frontend.domain.Invoices;
 import com.myprojects.invoices_frontend.domain.Products;
-import com.myprojects.invoices_frontend.domain.User;
+import com.myprojects.invoices_frontend.domain.Users;
 import com.myprojects.invoices_frontend.layout.forms.CustomersForm;
 import com.myprojects.invoices_frontend.layout.forms.InvoicesForm;
 import com.myprojects.invoices_frontend.layout.forms.ProductsForm;
@@ -11,14 +11,13 @@ import com.myprojects.invoices_frontend.layout.forms.UserForm;
 import com.myprojects.invoices_frontend.services.CustomersService;
 import com.myprojects.invoices_frontend.services.InvoicesService;
 import com.myprojects.invoices_frontend.services.ProductsService;
-import com.myprojects.invoices_frontend.services.UserService;
+import com.myprojects.invoices_frontend.services.UsersService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,13 +27,16 @@ public class MainView extends VerticalLayout {
     private CustomersService customersService = CustomersService.getInstance();
     private ProductsService productsService = ProductsService.getInstance();
     private InvoicesService invoicesService = InvoicesService.getInstance();
-    private UserService userService = UserService.getInstance();
+    private UsersService userService = UsersService.getInstance();
 
-    private Grid<Customers> gridCustomers = new Grid<>(Customers.class);
-    private Grid<Products> gridProducts = new Grid<>(Products.class);
-    private Grid<Invoices> gridInvoices = new Grid<>(Invoices.class);
-    private Grid<User> gridUser = new Grid<>(User.class);
-    private TextField filter = new TextField();
+    public Grid<Customers> gridCustomers = new Grid<>(Customers.class);
+    public Grid<Products> gridProducts = new Grid<>(Products.class);
+    public Grid<Invoices> gridInvoices = new Grid<>(Invoices.class);
+    public Grid<Users> gridUser = new Grid<>(Users.class);
+    public TextField txtCustomersFilter = new TextField();
+    public TextField txtProductsFilter = new TextField();
+    public TextField txtInvoicesFilter = new TextField();
+    public TextField txtUserFilter = new TextField();
     private CustomersForm customersForm = new CustomersForm(this);
     private ProductsForm productsForm = new ProductsForm(this);
     private InvoicesForm invoicesForm = new InvoicesForm(this);
@@ -52,16 +54,10 @@ public class MainView extends VerticalLayout {
 
     public MainView() {
 
-        filter.setPlaceholder("Filtruj ...");
-        filter.setClearButtonVisible(true);
-        filter.setValueChangeMode(ValueChangeMode.EAGER);
-        filter.addValueChangeListener(e -> update());
-        filter.setVisible(false);
-
         gridCustomers.setColumns("id", "fullName", "nip", "street", "postcode", "town");
         gridProducts.setColumns("id", "name", "vatRate", "netPrice", "vatValue", "grossPrice");
         gridInvoices.setColumns("id", "number", "date", "customer");
-        gridUser.setColumns("id", "fullName", "nip", "street", "postcode", "town");
+        gridUser.setColumns("id", "fullName", "nip", "street", "postcode", "town", "active");
         gridCustomers.setVisible(false);
         gridProducts.setVisible(false);
         gridInvoices.setVisible(false);
@@ -72,10 +68,10 @@ public class MainView extends VerticalLayout {
         btnAddNewInvoice.setVisible(false);
         btnAddNewCustomer.setVisible(false);
 
-        menuButtonClick(btnCustomers, gridCustomers, btnAddNewCustomer, customersForm);
-        menuButtonClick(btnProducts, gridProducts, btnAddNewProduct, productsForm);
-        menuButtonClick(btnInvoices, gridInvoices, btnAddNewInvoice, invoicesForm);
-        menuButtonClick(btnUser, gridUser, btnAddNewUser, userForm);
+        menuButtonClick(btnCustomers, gridCustomers, btnAddNewCustomer, customersForm, txtCustomersFilter );
+        menuButtonClick(btnProducts, gridProducts, btnAddNewProduct, productsForm, txtProductsFilter);
+        menuButtonClick(btnInvoices, gridInvoices, btnAddNewInvoice, invoicesForm, txtInvoicesFilter);
+        menuButtonClick(btnUser, gridUser, btnAddNewUser, userForm, txtUserFilter);
 
         btnAddNewCustomer.addClickListener(e -> {
             gridCustomers.asSingleSelect().clear();
@@ -83,7 +79,7 @@ public class MainView extends VerticalLayout {
         });
         btnAddNewProduct.addClickListener(e -> {
             gridProducts.asSingleSelect().clear();
-            productsForm.update(new Products());
+            productsForm.updateForm(new Products());
         });
         btnAddNewInvoice.addClickListener(e -> {
             gridInvoices.asSingleSelect().clear();
@@ -91,7 +87,7 @@ public class MainView extends VerticalLayout {
         });
         btnAddNewUser.addClickListener(e -> {
             gridUser.asSingleSelect().clear();
-            userForm.update(new User());
+            userForm.updateForm(new Users());
         });
 
         HorizontalLayout mainToolbar = new HorizontalLayout(
@@ -109,37 +105,31 @@ public class MainView extends VerticalLayout {
 
         add(mainToolbar, itemsToolbar, mainContent);
         customersForm.updateForm(null);
-        productsForm.update(null);
+        productsForm.updateForm(null);
         invoicesForm.update(null);
-        userForm.update(null);
+        userForm.updateForm(null);
         setSizeFull();
         refresh();
 
         gridCustomers.asSingleSelect().addValueChangeListener(event -> customersForm.updateForm(
                 gridCustomers.asSingleSelect().getValue()));
-        gridProducts.asSingleSelect().addValueChangeListener(event -> productsForm.update(
+        gridProducts.asSingleSelect().addValueChangeListener(event -> productsForm.updateForm(
                 gridProducts.asSingleSelect().getValue()));
         gridInvoices.asSingleSelect().addValueChangeListener(event -> invoicesForm.update(
                 gridInvoices.asSingleSelect().getValue()));
-        gridUser.asSingleSelect().addValueChangeListener(event -> userForm.update(
+        gridUser.asSingleSelect().addValueChangeListener(event -> userForm.updateForm(
                 gridUser.asSingleSelect().getValue()));
     }
 
-    private void update() {
-        gridCustomers.setItems(customersService.findByFullName(filter.getValue()));
-        gridProducts.setItems(productsService.findByName(filter.getValue()));
-        gridInvoices.setItems(invoicesService.findByNumber(filter.getValue()));
-        gridUser.setItems(userService.getUser());
-    }
-
     public void refresh() {
-        gridCustomers.setItems(customersService.getCustomers());
-        gridProducts.setItems(productsService.getProducts());
+        gridCustomers.setItems(customersService.getCustomersList());
+        gridProducts.setItems(productsService.getProductsList());
         gridInvoices.setItems(invoicesService.getInvoices());
-        gridUser.setItems(userService.getUser());
+        gridUser.setItems(userService.getUsersList());
     }
 
-    public void menuButtonClick(@NotNull Button menuButton, Grid grid, Button button, FormLayout form) {
+    public void menuButtonClick(@NotNull Button menuButton, Grid grid, Button button,
+                                FormLayout form, TextField filter) {
         menuButton.addClickListener(e -> {
             mainContent.removeAll();
             mainContent.add(grid, form);

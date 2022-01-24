@@ -22,6 +22,8 @@ dependencies {
     implementation 'com.vaadin:vaadin-spring-boot-starter'
     implementation 'org.projectlombok:lombok:1.18.22'
     implementation 'org.jetbrains:annotations:22.0.0'
+    implementation 'org.vaadin.spring.addons:vaadin-spring-addon-i18n:2.0.0.RELEASE'
+    implementation 'org.vaadin.spring.addons:vaadin-spring-addon-portlet:2.0.0.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }

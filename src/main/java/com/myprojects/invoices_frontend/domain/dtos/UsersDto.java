@@ -2,9 +2,9 @@ package com.myprojects.invoices_frontend.domain.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CustomersDto {
+public class UsersDto {
 
-    @JsonProperty("customer_id")
+    @JsonProperty("user_id")
     private Long id;
     @JsonProperty("full_name")
     private String fullName;
@@ -16,17 +16,21 @@ public class CustomersDto {
     private String postcode;
     @JsonProperty("town")
     private String town;
+    @JsonProperty("active")
+    private boolean active;
 
-    public CustomersDto() {
+    public UsersDto() {
     }
 
-    public CustomersDto(Long id, String fullName, String nip, String street, String postcode, String town) {
+    public UsersDto(Long id, String fullName, String nip, String street, String postcode, String town,
+                    boolean active) {
         this.id = id;
         this.fullName = fullName;
         this.nip = nip;
         this.street = street;
         this.postcode = postcode;
         this.town = town;
+        this.active = active;
     }
 
     public Long getId() {
@@ -75,5 +79,13 @@ public class CustomersDto {
 
     public void setTown(String town) {
         this.town = town;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

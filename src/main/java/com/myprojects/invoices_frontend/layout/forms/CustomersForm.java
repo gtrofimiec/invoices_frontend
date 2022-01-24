@@ -14,6 +14,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.PropertyId;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomersForm extends FormLayout {
@@ -21,7 +22,7 @@ public class CustomersForm extends FormLayout {
     @PropertyId("fullName")
     private TextField txtFullName = new TextField("Pełna nazwa");
     @PropertyId("nip")
-    private TextField txtNip = new TextField("NIP (tylko cyfry)", "5631858410", "2367852376");
+    private TextField txtNip = new TextField("NIP (tylko cyfry)");
     @PropertyId("street")
     private TextField txtStreet = new TextField("Ulica");
     @PropertyId("postcode")
@@ -30,7 +31,7 @@ public class CustomersForm extends FormLayout {
     private TextField txtTown = new TextField("Miejscowość");
     private Button btnSave = new Button("Zapisz");
     private Button btnDelete = new Button("Usuń");
-    private Button btnCancel = new Button("Anuluj");
+    private Button btnCancel = new Button("Zamknij");
     private Button btnGetFromCEIDG = new Button("Pobierz z CEIDG");
     private Binder<Customers> binder = new Binder<>(Customers.class);
     private MainView mainView;
@@ -38,31 +39,38 @@ public class CustomersForm extends FormLayout {
     private final PostcodeApiService postcodeApiService = PostcodeApiService.getInstance();
     private final CeidgApiService ceidgApiService = CeidgApiService.getInstance();
 
-    public CustomersForm(MainView mainView) {
+    public CustomersForm(@NotNull MainView mainView) {
         this.mainView = mainView;
-        HorizontalLayout buttons = new HorizontalLayout(btnSave, btnDelete, btnCancel);
-        HorizontalLayout nip = new HorizontalLayout(txtNip, btnGetFromCEIDG);
+        mainView.txtCustomersFilter.setPlaceholder("Filtruj po nazwie ...");
+        mainView.txtCustomersFilter.setClearButtonVisible(true);
+        mainView.txtCustomersFilter.setValueChangeMode(ValueChangeMode.EAGER);
+        mainView.txtCustomersFilter.addValueChangeListener(e -> find());
+
         btnSave.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         btnCancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         btnGetFromCEIDG.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        txtTown.addFocusListener(event -> getTownFromPostcode(txtPostcode.getValue()));
         btnGetFromCEIDG.addClickListener(event -> getFromCEIDG(txtNip.getValue()));
-        add(nip, txtFullName, txtStreet, txtPostcode, txtTown, buttons);
         btnSave.addClickListener(event -> saveCustomer());
         btnDelete.addClickListener(event -> deleteCustomer());
         btnCancel.addClickListener(event -> cancel());
+        txtTown.addFocusListener(event -> getTownFromPostcode(txtPostcode.getValue()));
+        HorizontalLayout buttons = new HorizontalLayout(btnSave, btnDelete, btnCancel);
+        HorizontalLayout nip = new HorizontalLayout(txtNip, btnGetFromCEIDG);
+        add(nip, txtFullName, txtStreet, txtPostcode, txtTown, buttons);
         binder.bindInstanceFields(this);
     }
 
     private void saveCustomer() {
         Customers customer = binder.getBean();
-        if (customer.getId() != null) {
-            customersService.updateCustomer(customer);
-        } else {
-            customersService.saveCustomer(customer);
+        if(!txtFullName.isEmpty()) {
+            if (customer.getId() != null) {
+                customersService.updateCustomer(customer);
+            } else {
+                customersService.saveCustomer(customer);
+            }
         }
-            mainView.refresh();
+        mainView.refresh();
         updateForm(customer);
     }
 
@@ -87,9 +95,15 @@ public class CustomersForm extends FormLayout {
         }
     }
 
-    private void getTownFromPostcode(@NotNull String postcode) {
+    private void find() {
+        mainView.gridCustomers.setItems(
+                customersService.findByFullName(mainView.txtCustomersFilter.getValue())
+        );
+    }
+
+    private void getTownFromPostcode(String postcode) {
         txtTown.setValue(postcodeApiService.getTownFromPostcode(postcode).getTown());
-        mainView.refresh();
+        btnSave.focus();
     }
 
     private void getFromCEIDG(String nip) {

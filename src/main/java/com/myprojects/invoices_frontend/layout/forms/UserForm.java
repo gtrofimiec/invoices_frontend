@@ -1,66 +1,103 @@
 package com.myprojects.invoices_frontend.layout.forms;
 
 import com.myprojects.invoices_frontend.MainView;
-import com.myprojects.invoices_frontend.domain.User;
-import com.myprojects.invoices_frontend.services.UserService;
+import com.myprojects.invoices_frontend.apis.postcodeapi.PostcodeApiService;
+import com.myprojects.invoices_frontend.domain.Users;
+import com.myprojects.invoices_frontend.services.UsersService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.converter.StringToLongConverter;
+import com.vaadin.flow.data.binder.PropertyId;
+import com.vaadin.flow.data.value.ValueChangeMode;
+import org.jetbrains.annotations.NotNull;
 
 public class UserForm extends FormLayout {
 
-    private TextField id = new TextField("Id");
-    private TextField fullName = new TextField("Pełna nazwa");
-    private TextField nip = new TextField("NIP");
-    private TextField street = new TextField("Ulica");
-    private TextField postcode = new TextField("Kod pocztowy");
-    private TextField town = new TextField("Miejsowość");
-    private Button save = new Button("Zapisz");
-    private Button delete = new Button("Usuń");
-    private Binder<User> binder = new Binder<>(User.class);
+    @PropertyId("fullName")
+    private TextField txtFullName = new TextField("Pełna nazwa");
+    @PropertyId("nip")
+    private TextField txtNip = new TextField("NIP");
+    @PropertyId("street")
+    private TextField txtStreet = new TextField("Ulica");
+    @PropertyId("postcode")
+    private TextField txtPostcode = new TextField("Kod pocztowy");
+    @PropertyId("town")
+    private TextField txtTown = new TextField("Miejsowość");
+    @PropertyId("active")
+    private Checkbox chkIsActive = new Checkbox("Aktywny");
+    private Button btnSave = new Button("Zapisz");
+    private Button btnDelete = new Button("Usuń");
+    private Button btnCancel = new Button("Zamknij");
+    private Binder<Users> binder = new Binder<>(Users.class);
     private MainView mainView;
-    private UserService service = UserService.getInstance();
+    private UsersService usersService = UsersService.getInstance();
+    private final PostcodeApiService postcodeApiService = PostcodeApiService.getInstance();
 
-    public UserForm(MainView mainView) {
+    public UserForm(@NotNull MainView mainView) {
         this.mainView = mainView;
-        HorizontalLayout buttons = new HorizontalLayout(save, delete);
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        delete.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        add(fullName, nip, street, postcode, town, buttons);
-        save.addClickListener(event -> save());
-        delete.addClickListener(event -> delete());
-        binder.forField(id)
-                .withNullRepresentation("")
-                .withConverter(new StringToLongConverter("Not a long value"))
-                .bind(User::getId, User::setId);
+        mainView.txtUserFilter.setPlaceholder("Filtruj po nazwie ...");
+        mainView.txtUserFilter.setClearButtonVisible(true);
+        mainView.txtUserFilter.setValueChangeMode(ValueChangeMode.EAGER);
+        mainView.txtUserFilter.addValueChangeListener(e -> find());
+
+        btnSave.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        btnCancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        btnSave.addClickListener(event -> saveUser());
+        btnDelete.addClickListener(event -> deleteUser());
+        btnCancel.addClickListener(event -> cancel());
+        txtTown.addFocusListener(event -> getTownFromPostcode(txtPostcode.getValue()));
+        HorizontalLayout buttons = new HorizontalLayout(btnSave, btnDelete, btnCancel);
+        add(chkIsActive, txtFullName, txtNip, txtStreet, txtPostcode, txtTown, buttons);
         binder.bindInstanceFields(this);
     }
 
-    private void save() {
-        User user = binder.getBean();
-        service.save(user);
+    private void saveUser() {
+        Users user = binder.getBean();
+        if(!txtFullName.isEmpty()) {
+            if (user.getId() != null) {
+                usersService.updateUser(user);
+            } else {
+                usersService.saveUser(user);
+            }
+        }
         mainView.refresh();
-        update(null);
+        updateForm(user);
     }
 
-    private void delete() {
-        User user = binder.getBean();
-        service.delete(user);
+    private void deleteUser() {
+        Users user = binder.getBean();
+        usersService.deleteUser(user);
         mainView.refresh();
-        update(null);
+        updateForm(null);
     }
 
-    public void update(User user) {
+    private void cancel() {
+        this.setVisible(false);
+    }
+
+    public void updateForm(Users user) {
         binder.setBean(user);
         if (user == null) {
             setVisible(false);
         } else {
             setVisible(true);
-            fullName.focus();
+            txtFullName.focus();
         }
+    }
+
+    private void find() {
+        mainView.gridUser.setItems(
+                usersService.findByFullName(mainView.txtUserFilter.getValue())
+        );
+    }
+
+    private void getTownFromPostcode(@NotNull String postcode) {
+        txtTown.setValue(postcodeApiService.getTownFromPostcode(postcode).getTown());
+        btnSave.focus();
     }
 }

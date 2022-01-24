@@ -2,10 +2,7 @@ package com.myprojects.invoices_frontend.services;
 
 import com.myprojects.invoices_frontend.clients.CustomersClient;
 import com.myprojects.invoices_frontend.domain.Customers;
-import com.myprojects.invoices_frontend.domain.dtos.CustomersDto;
 import com.myprojects.invoices_frontend.mappers.CustomersMapper;
-import com.vaadin.flow.data.binder.Binder;
-import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +10,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Service
 public class CustomersService {
 
-    private List<Customers> customers;
+    private List<Customers> customersList;
     private static CustomersClient customersClient;
     private static CustomersService customersService;
     private static CustomersMapper customersMapper = new CustomersMapper();
-    private Binder<Customers> binder = new Binder<>(Customers.class);
 
     public CustomersService(CustomersClient customersClient) {
         CustomersService.customersClient = customersClient;
@@ -35,13 +30,14 @@ public class CustomersService {
     }
 
     public Set<Customers> findByFullName(String fullName) {
-        return customers.stream()
+        return customersList.stream()
                 .filter(c -> c.getFullName().contains(fullName))
                 .collect(Collectors.toSet());
     }
 
-    public List<Customers> getCustomers() {
-        return customersMapper.mapToCustomersList(customersClient.getCustomers());
+    public List<Customers> getCustomersList() {
+        customersList = customersMapper.mapToCustomersList(customersClient.getCustomers());
+        return customersList;
     }
 
     public void saveCustomer(Customers customer) {

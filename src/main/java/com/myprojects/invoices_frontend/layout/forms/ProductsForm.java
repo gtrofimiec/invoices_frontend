@@ -9,72 +9,118 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.converter.StringToBigDecimalConverter;
-import com.vaadin.flow.data.converter.StringToLongConverter;
+import com.vaadin.flow.data.binder.PropertyId;
+import com.vaadin.flow.data.value.ValueChangeMode;
+import org.jetbrains.annotations.NotNull;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class ProductsForm extends FormLayout {
 
-    private TextField txtId = new TextField("Id");
+    @PropertyId("name")
     private TextField txtName = new TextField("Nazwa produktu");
-    private ComboBox<VatRate> cmbVatRate = new ComboBox<>("Stawka VAT");
-    private TextField txtNetPrice = new TextField("Cena netto");
-    private TextField txtVatValue = new TextField("Wartość VAT");
-    private TextField txtGrossPrice = new TextField("Cena brutto");
+    @PropertyId("vatRate")
+    private final ComboBox<Integer> cmbVatRate = new ComboBox<>("Stawka VAT");
+    @PropertyId("netPrice")
+    private BigDecimalField txtNetPrice = new BigDecimalField("Cena netto",
+            new BigDecimal(0.00), "0.00");
+    @PropertyId("vatValue")
+    private BigDecimalField txtVatValue = new BigDecimalField("Wartość VAT",
+            new BigDecimal(0.00), "0.00");
+    @PropertyId("grossPrice")
+    private BigDecimalField txtGrossPrice = new BigDecimalField("Cena brutto",
+            new BigDecimal(0.00), "0.00");
     private Button btnSave = new Button("Zapisz");
     private Button btnDelete = new Button("Usuń");
+    private Button btnCancel = new Button("Zamknij");
     private Binder<Products> binder = new Binder<>(Products.class);
     private MainView mainView;
-    private ProductsService service = ProductsService.getInstance();
+    private ProductsService productService = ProductsService.getInstance();
 
-    public ProductsForm(MainView mainView) {
+    public ProductsForm(@NotNull MainView mainView) {
         this.mainView = mainView;
-        HorizontalLayout buttons = new HorizontalLayout(btnSave, btnDelete);
+        mainView.txtProductsFilter.setPlaceholder("Filtruj po nazwie ...");
+        mainView.txtProductsFilter.setClearButtonVisible(true);
+        mainView.txtProductsFilter.setValueChangeMode(ValueChangeMode.EAGER);
+        mainView.txtProductsFilter.addValueChangeListener(e -> find());
+
         btnSave.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        btnCancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        btnSave.addClickListener(event -> saveProduct());
+        btnDelete.addClickListener(event -> deleteProduct());
+        btnCancel.addClickListener(event -> cancel());
+        txtVatValue.addFocusListener(event -> calculateValues());
+        HorizontalLayout buttons = new HorizontalLayout(btnSave, btnDelete, btnCancel);
         add(txtName, cmbVatRate, txtNetPrice, txtVatValue, txtGrossPrice, buttons);
-        btnSave.addClickListener(event -> save());
-        btnDelete.addClickListener(event -> delete());
-//        binder.forField(txtId)
-//                .withNullRepresentation("")
-//                .withConverter(new StringToLongConverter("Not a long value"))
-//                .bind(Products::getId, Products::setId);
-        binder.forField(txtNetPrice)
-                .withNullRepresentation("")
-                .withConverter(new StringToBigDecimalConverter("Not a bigdecimal value"))
-                .bind(Products::getNetPrice, Products::setNetPrice);
-        binder.forField(txtVatValue)
-                .withNullRepresentation("")
-                .withConverter(new StringToBigDecimalConverter("Not a bigdecimal value"))
-                .bind(Products::getVatValue, Products::setVatValue);
-        binder.forField(txtGrossPrice)
-                .withNullRepresentation("")
-                .withConverter(new StringToBigDecimalConverter("Not a bigdecimal value"))
-                .bind(Products::getGrossPrice, Products::setGrossPrice);
+        txtNetPrice.setLocale(Locale.ROOT);
+        txtVatValue.setLocale(Locale.ROOT);
+        txtGrossPrice.setLocale(Locale.ROOT);
+        cmbVatRate.setItems(Arrays.stream(VatRate.values())
+                .map(VatRate::getValue)
+                .collect(Collectors.toList()));
+        cmbVatRate.setValue(23);
         binder.bindInstanceFields(this);
     }
 
-    private void save() {
+    private void saveProduct() {
         Products product = binder.getBean();
-        service.save(product);
+        if(!txtName.isEmpty()) {
+            if (product.getId() != null) {
+                productService.updateProduct(product);
+            } else {
+                productService.saveProduct(product);
+            }
+        }
         mainView.refresh();
-        update(null);
+        updateForm(product);
     }
 
-    private void delete() {
+    private void deleteProduct() {
         Products product = binder.getBean();
-        service.delete(product);
+        productService.deleteProduct(product);
         mainView.refresh();
-        update(null);
+        updateForm(null);
     }
 
-    public void update(Products product) {
+    private void cancel() {
+        this.setVisible(false);
+    }
+
+    public void updateForm(Products product) {
         binder.setBean(product);
         if (product == null) {
             setVisible(false);
         } else {
             setVisible(true);
             txtName.focus();
+        }
+    }
+
+    private void find() {
+        mainView.gridProducts.setItems(
+                productService.findByName(mainView.txtProductsFilter.getValue())
+        );
+    }
+
+    public void calculateValues() {
+        if (txtNetPrice.getValue() != null) {
+            BigDecimal vatRateValue = new BigDecimal(String.valueOf(cmbVatRate.getValue()));
+            vatRateValue = vatRateValue.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+            BigDecimal vatValue = txtNetPrice.getValue().multiply(vatRateValue).setScale(2, RoundingMode.HALF_UP);
+            txtVatValue.setValue(vatValue);
+            BigDecimal grossValue = txtNetPrice.getValue().add(vatValue).setScale(2, RoundingMode.HALF_UP);
+            txtGrossPrice.setValue(grossValue);
+            txtNetPrice.setValue(txtNetPrice.getValue().setScale(2, RoundingMode.HALF_UP));
+        } else {
+            txtNetPrice.focus();
         }
     }
 }

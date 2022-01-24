@@ -1,21 +1,29 @@
-package com.myprojects.invoices_frontend.domain;
+package com.myprojects.invoices_frontend.domain.dtos;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
-public class Products {
+public class ProductsDto {
 
+    @JsonProperty("product_id")
     private Long id;
+    @JsonProperty("name")
     private String name;
+    @JsonProperty("vat_rate")
     private int vatRate;
+    @JsonProperty("net_price")
     private BigDecimal netPrice;
+    @JsonProperty("vat_value")
     private BigDecimal vatValue;
+    @JsonProperty("gross_price")
     private BigDecimal grossPrice;
 
-    public Products() {
+    public ProductsDto() {
     }
 
-    public Products(Long id, String name, int vatRate, BigDecimal netPrice, BigDecimal vatValue, BigDecimal grossPrice) {
+    public ProductsDto(Long id, String name, int vatRate, BigDecimal netPrice, BigDecimal vatValue,
+                       BigDecimal grossPrice) {
         this.id = id;
         this.name = name;
         this.vatRate = vatRate;
@@ -71,26 +79,4 @@ public class Products {
     public void setGrossPrice(BigDecimal grossPrice) {
         this.grossPrice = grossPrice;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Products)) return false;
-        Products products = (Products) o;
-        return id.equals(products.id) && name.equals(products.name) && netPrice.equals(products.netPrice) && vatValue.equals(products.vatValue) && grossPrice.equals(products.grossPrice);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, vatRate, netPrice, vatValue, grossPrice);
-    }
-
-//    public String getVatRate(String s) {
-//        int val = Integer.parseInt(s);
-//        return Arrays.stream(VatRate.values())
-//                .map(v -> v.getValue())
-//                .filter(v -> Integer.parseInt(v) == val)
-//                .collect(Collectors.toList())
-//                .get(0);
-//    }
 }

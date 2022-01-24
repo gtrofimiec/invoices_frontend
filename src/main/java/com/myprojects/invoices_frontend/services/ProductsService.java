@@ -1,53 +1,54 @@
 package com.myprojects.invoices_frontend.services;
 
+import com.myprojects.invoices_frontend.clients.ProductsClient;
 import com.myprojects.invoices_frontend.domain.Products;
-import com.vaadin.flow.data.binder.Binder;
+import com.myprojects.invoices_frontend.mappers.ProductsMapper;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
 public class ProductsService {
 
-    private Set<Products> products;
+    private List<Products> productsList;
+    private static ProductsClient productsClient;
     private static ProductsService productsService;
-    private Binder<Products> binder = new Binder<>(Products.class);
+    private static ProductsMapper productsMapper = new ProductsMapper();
 
-    public ProductsService() {
-        this.products = exampleData();
+    public ProductsService(ProductsClient productsClient) {
+        ProductsService.productsClient = productsClient;
     }
 
     public static ProductsService getInstance() {
         if (productsService == null) {
-            productsService = new ProductsService();
+            productsService = new ProductsService(productsClient);
         }
         return productsService;
     }
 
-    public Set<Products> getProducts() {
-        return new HashSet<>(products);
-    }
-
     public Set<Products> findByName(String name) {
-        return products.stream()
+        return productsList.stream()
                 .filter(p -> p.getName().contains(name))
                 .collect(Collectors.toSet());
     }
 
-    private @NotNull Set<Products> exampleData() {
-        Set<Products> products = new HashSet<>();
-        products.add(new Products(1L, "młotek", 23, new BigDecimal("20.00"),
-                new BigDecimal("4.60"), new BigDecimal("24.60")));
-        return products;
+    public List<Products> getProductsList() {
+        productsList = productsMapper.mapToProductsList(productsClient.getProducts());
+        return productsList;
     }
 
-    public void save(Products product) {
-        this.products.add(product);
+    public void saveProduct(Products product) {
+        productsClient.saveProduct(productsMapper.mapToProductDto(product));
     }
 
-    public void delete(Products product) {
-        this.products.remove(product);
+    public void updateProduct(Products product) {
+        productsClient.updateProduct(productsMapper.mapToProductDto(product));
+    }
+
+    public void deleteProduct(@NotNull Products product) {
+        productsClient.deleteProduct(productsMapper.mapToProductDto(product));
     }
 }

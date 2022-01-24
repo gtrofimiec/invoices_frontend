@@ -27,14 +27,14 @@ public class InvoicesService {
         return invoicesService;
     }
 
-    public Set<Invoices> getInvoices() {
-        return new HashSet<>(invoices);
-    }
-
     public Set<Invoices> findByNumber(String number) {
         return invoices.stream()
                 .filter(i -> i.getNumber().contains(number))
                 .collect(Collectors.toSet());
+    }
+
+    public Set<Invoices> getInvoices() {
+        return new HashSet<>(invoices);
     }
 
     private @NotNull Set<Invoices> exampleData() {

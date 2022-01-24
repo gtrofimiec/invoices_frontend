@@ -1,9 +1,9 @@
 package com.myprojects.invoices_frontend.domain;
 
-import java.util.Objects;
+import lombok.Data;
 
-
-public class User {
+@Data
+public class Users {
 
     private Long id;
     private String fullName;
@@ -11,17 +11,20 @@ public class User {
     private String street;
     private String postcode;
     private String town;
+    private boolean active;
 
-    public User() {
+    public Users() {
     }
 
-    public User(Long id, String fullName, String nip, String street, String postcode, String town) {
+    public Users(Long id, String fullName, String nip, String street, String postcode, String town,
+                 boolean active) {
         this.id = id;
         this.fullName = fullName;
         this.nip = nip;
         this.street = street;
         this.postcode = postcode;
         this.town = town;
+        this.active = active;
     }
 
     public Long getId() {
@@ -72,16 +75,11 @@ public class User {
         this.town = town;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return id.equals(user.id) && fullName.equals(user.fullName) && nip.equals(user.nip) && street.equals(user.street) && postcode.equals(user.postcode) && town.equals(user.town);
+    public boolean isActive() {
+        return active;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, fullName, nip, street, postcode, town);
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

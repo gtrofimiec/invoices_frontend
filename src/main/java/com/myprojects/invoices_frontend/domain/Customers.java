@@ -1,9 +1,7 @@
 package com.myprojects.invoices_frontend.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.math.BigInteger;
 import java.util.Objects;
 
 @Data

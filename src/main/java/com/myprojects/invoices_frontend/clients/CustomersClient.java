@@ -1,6 +1,5 @@
 package com.myprojects.invoices_frontend.clients;
 
-import com.myprojects.invoices_frontend.apis.ceidgapi.CeidgApiClient;
 import com.myprojects.invoices_frontend.config.CustomersConfig;
 import com.myprojects.invoices_frontend.domain.Customers;
 import com.myprojects.invoices_frontend.domain.dtos.CustomersDto;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 @Component
 public class CustomersClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CeidgApiClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomersClient.class);
 
     private final RestTemplate restTemplate;
     private final CustomersConfig customersConfig;
@@ -41,10 +40,10 @@ public class CustomersClient {
                 .encode()
                 .toUri();
         try {
-            CustomersDto[] customersEntity = restTemplate.getForObject(url, CustomersDto[].class);
-            if(customersEntity != null) {
+            CustomersDto[] customersDtoList = restTemplate.getForObject(url, CustomersDto[].class);
+            if(customersDtoList.length != 0) {
                 LOGGER.info("Customers database was sucessfully loaded");
-                return Arrays.stream(customersEntity)
+                return Arrays.stream(customersDtoList)
                         .collect(Collectors.toList());
             } else {
                 LOGGER.warn("Customers database could not be retrieved or it is empty");
@@ -66,9 +65,9 @@ public class CustomersClient {
                 .toUri();
         try {
             HttpEntity<CustomersDto> request = new HttpEntity<>(customerDto, headers);
-            Customers sentData = restTemplate.postForObject(url, request, Customers.class);
-            if(sentData != null) {
-                LOGGER.info("Customer " + sentData.getFullName() + " has been correctly sent");
+            Customers sentCustomer = restTemplate.postForObject(url, request, Customers.class);
+            if(sentCustomer != null) {
+                LOGGER.info("Customer " + sentCustomer.getFullName() + " has been correctly sent");
             }
         } catch (RestClientException e) {
             LOGGER.error(e.getMessage(), e);
