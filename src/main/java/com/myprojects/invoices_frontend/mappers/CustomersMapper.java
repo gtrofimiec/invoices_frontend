@@ -10,30 +10,40 @@ import java.util.stream.Collectors;
 public class CustomersMapper {
 
     public Customers mapToCustomer(final @NotNull CustomersDto customerDto) {
+        InvoicesMapper invoicesMapper = new InvoicesMapper();
         return new Customers(
                 customerDto.getId(),
                 customerDto.getFullName(),
                 customerDto.getNip(),
                 customerDto.getStreet(),
-                customerDto.getPostcode(),
-                customerDto.getTown()
+                customerDto.getPostCode(),
+                customerDto.getTown(),
+                invoicesMapper.mapToInvoicesList(customerDto.getInvoicesDtoList())
         );
     }
 
     public CustomersDto mapToCustomerDto(final @NotNull Customers customer) {
+        InvoicesMapper invoicesMapper = new InvoicesMapper();
         return new CustomersDto(
                 customer.getId(),
                 customer.getFullName(),
                 customer.getNip(),
                 customer.getStreet(),
-                customer.getPostcode(),
-                customer.getTown()
+                customer.getPostCode(),
+                customer.getTown(),
+                invoicesMapper.mapToInvoicesDtoList(customer.getInvoicesList())
         );
     }
 
     public List<Customers> mapToCustomersList(final @NotNull List<CustomersDto> customersDtoList) {
         return customersDtoList.stream()
                 .map(this::mapToCustomer)
+                .collect(Collectors.toList());
+    }
+
+    public List<CustomersDto> mapToCustomersDtoList(final @NotNull List<Customers> customersList) {
+        return customersList.stream()
+                .map(this::mapToCustomerDto)
                 .collect(Collectors.toList());
     }
 }

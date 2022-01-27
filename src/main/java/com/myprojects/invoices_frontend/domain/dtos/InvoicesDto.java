@@ -1,32 +1,39 @@
-package com.myprojects.invoices_frontend.domain;
+package com.myprojects.invoices_frontend.domain.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import com.myprojects.invoices_frontend.domain.Customers;
+import com.myprojects.invoices_frontend.domain.Users;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
-@Data
-public class Invoices {
+public class InvoicesDto {
 
+    @JsonProperty("invoice_id")
     private Long id;
+    @JsonProperty("number")
     private String number;
+    @JsonProperty("date")
     private Date date;
+    @JsonProperty("net_sum")
     private BigDecimal netSum;
+    @JsonProperty("vat_sum")
     private BigDecimal vatSum;
+    @JsonProperty("gross_sum")
     private BigDecimal grossSum;
+    @JsonProperty("payment_method")
     private String paymentMethod;
-    private Customers customer;
-    private Users user;
-    private List<Products> productsList;
+    @JsonProperty("customer_id")
+    private CustomersDto customerDto;
+    @JsonProperty("user_id")
+    private UsersDto userDto;
+    @JsonProperty("products_list")
+    private List<ProductsDto> productsDtoList;
 
-    public Invoices() {
-    }
-
-    public Invoices(Long id, String number, Date date, BigDecimal netSum, BigDecimal vatSum, BigDecimal grossSum,
-                    String paymentMethod, Customers customer, Users user, List<Products> productsList) {
+    public InvoicesDto(Long id, String number, Date date, BigDecimal netSum, BigDecimal vatSum, BigDecimal grossSum,
+                       String paymentMethod, CustomersDto customerDto, UsersDto userDto,
+                       List<ProductsDto> productsDtoList) {
         this.id = id;
         this.number = number;
         this.date = date;
@@ -34,22 +41,9 @@ public class Invoices {
         this.vatSum = vatSum;
         this.grossSum = grossSum;
         this.paymentMethod = paymentMethod;
-        this.customer = customer;
-        this.user = user;
-        this.productsList = productsList;
-    }
-
-    public Invoices(String number, Date date, BigDecimal netSum, BigDecimal vatSum, BigDecimal grossSum,
-                    String paymentMethod, Customers customer, Users user, List<Products> productsList) {
-        this.number = number;
-        this.date = date;
-        this.netSum = netSum;
-        this.vatSum = vatSum;
-        this.grossSum = grossSum;
-        this.paymentMethod = paymentMethod;
-        this.customer = customer;
-        this.user = user;
-        this.productsList = productsList;
+        this.customerDto = customerDto;
+        this.userDto = userDto;
+        this.productsDtoList = productsDtoList;
     }
 
     public Long getId() {
@@ -108,27 +102,27 @@ public class Invoices {
         this.paymentMethod = paymentMethod;
     }
 
-    public Customers getCustomer() {
-        return customer;
+    public CustomersDto getCustomerDto() {
+        return customerDto;
     }
 
-    public void setCustomer(Customers customer) {
-        this.customer = customer;
+    public void setCustomerDto(CustomersDto customerDto) {
+        this.customerDto = customerDto;
     }
 
-    public Users getUser() {
-        return user;
+    public UsersDto getUserDto() {
+        return userDto;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setUserDto(UsersDto userDto) {
+        this.userDto = userDto;
     }
 
-    public List<Products> getProductsList() {
-        return productsList;
+    public List<ProductsDto> getProductsDtoList() {
+        return productsDtoList;
     }
 
-    public void setProductsList(List<Products> productsList) {
-        this.productsList = productsList;
+    public void setProductsDtoList(List<ProductsDto> productsDtoList) {
+        this.productsDtoList = productsDtoList;
     }
 }

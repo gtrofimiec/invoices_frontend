@@ -1,6 +1,10 @@
 package com.myprojects.invoices_frontend.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.myprojects.invoices_frontend.domain.dtos.InvoicesDto;
+
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 public class Products {
@@ -11,17 +15,20 @@ public class Products {
     private BigDecimal netPrice;
     private BigDecimal vatValue;
     private BigDecimal grossPrice;
+    private List<Invoices> invoicesList;
 
     public Products() {
     }
 
-    public Products(Long id, String name, int vatRate, BigDecimal netPrice, BigDecimal vatValue, BigDecimal grossPrice) {
+    public Products(Long id, String name, int vatRate, BigDecimal netPrice, BigDecimal vatValue, BigDecimal grossPrice,
+                    List<Invoices> invoicesList) {
         this.id = id;
         this.name = name;
         this.vatRate = vatRate;
         this.netPrice = netPrice;
         this.vatValue = vatValue;
         this.grossPrice = grossPrice;
+        this.invoicesList = invoicesList;
     }
 
     public Long getId() {
@@ -72,25 +79,11 @@ public class Products {
         this.grossPrice = grossPrice;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Products)) return false;
-        Products products = (Products) o;
-        return id.equals(products.id) && name.equals(products.name) && netPrice.equals(products.netPrice) && vatValue.equals(products.vatValue) && grossPrice.equals(products.grossPrice);
+    public List<Invoices> getInvoicesList() {
+        return invoicesList;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, vatRate, netPrice, vatValue, grossPrice);
+    public void setInvoicesList(List<Invoices> invoicesList) {
+        this.invoicesList = invoicesList;
     }
-
-//    public String getVatRate(String s) {
-//        int val = Integer.parseInt(s);
-//        return Arrays.stream(VatRate.values())
-//                .map(v -> v.getValue())
-//                .filter(v -> Integer.parseInt(v) == val)
-//                .collect(Collectors.toList())
-//                .get(0);
-//    }
 }

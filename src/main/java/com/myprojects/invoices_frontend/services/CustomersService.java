@@ -29,10 +29,10 @@ public class CustomersService {
         return customersService;
     }
 
-    public Set<Customers> findByFullName(String fullName) {
+    public List<Customers> findByFullName(String fullName) {
         return customersList.stream()
                 .filter(c -> c.getFullName().contains(fullName))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public List<Customers> getCustomersList() {

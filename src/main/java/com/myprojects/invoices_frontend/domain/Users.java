@@ -2,6 +2,8 @@ package com.myprojects.invoices_frontend.domain;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Users {
 
@@ -9,22 +11,24 @@ public class Users {
     private String fullName;
     private String nip;
     private String street;
-    private String postcode;
+    private String postCode;
     private String town;
     private boolean active;
+    private List<Invoices> invoicesList;
 
     public Users() {
     }
 
-    public Users(Long id, String fullName, String nip, String street, String postcode, String town,
-                 boolean active) {
+    public Users(Long id, String fullName, String nip, String street, String postCode, String town,
+                 boolean active, List<Invoices> invoicesList) {
         this.id = id;
         this.fullName = fullName;
         this.nip = nip;
         this.street = street;
-        this.postcode = postcode;
+        this.postCode = postCode;
         this.town = town;
         this.active = active;
+        this.invoicesList = invoicesList;
     }
 
     public Long getId() {
@@ -59,12 +63,12 @@ public class Users {
         this.street = street;
     }
 
-    public String getPostcode() {
-        return postcode;
+    public String getPostCode() {
+        return postCode;
     }
 
-    public void setPostcode(String postcode) {
-        this.postcode = postcode;
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
     }
 
     public String getTown() {
@@ -81,5 +85,13 @@ public class Users {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public List<Invoices> getInvoicesList() {
+        return invoicesList;
+    }
+
+    public void setInvoicesList(List<Invoices> invoicesList) {
+        this.invoicesList = invoicesList;
     }
 }

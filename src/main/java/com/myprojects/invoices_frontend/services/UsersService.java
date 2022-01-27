@@ -6,8 +6,8 @@ import com.myprojects.invoices_frontend.mappers.UsersMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,15 +29,25 @@ public class UsersService {
         return usersService;
     }
 
-    public Set<Users> findByFullName(String fullName) {
+    public List<Users> findByFullName(String fullName) {
         return usersList.stream()
                 .filter(c -> c.getFullName().contains(fullName))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public List<Users> getUsersList() {
         usersList = usersMapper.mapToUsersList(usersClient.getUsers());
         return usersList;
+    }
+
+    public Users getActiveUser() {
+        if(usersList != null) {
+            return getUsersList().stream()
+                    .filter(Users::isActive)
+                    .findFirst().get();
+        } else {
+            return new Users();
+        }
     }
 
     public void saveUser(Users user) {

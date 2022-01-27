@@ -44,17 +44,19 @@ public class CustomersForm extends FormLayout {
         mainView.txtCustomersFilter.setPlaceholder("Filtruj po nazwie ...");
         mainView.txtCustomersFilter.setClearButtonVisible(true);
         mainView.txtCustomersFilter.setValueChangeMode(ValueChangeMode.EAGER);
-        mainView.txtCustomersFilter.addValueChangeListener(e -> find());
 
         btnSave.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         btnCancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         btnGetFromCEIDG.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        btnGetFromCEIDG.addClickListener(event -> getFromCEIDG(txtNip.getValue()));
+
+        mainView.txtCustomersFilter.addValueChangeListener(e -> find());
         btnSave.addClickListener(event -> saveCustomer());
         btnDelete.addClickListener(event -> deleteCustomer());
         btnCancel.addClickListener(event -> cancel());
+        btnGetFromCEIDG.addClickListener(event -> getFromCEIDG(txtNip.getValue()));
         txtTown.addFocusListener(event -> getTownFromPostcode(txtPostcode.getValue()));
+
         HorizontalLayout buttons = new HorizontalLayout(btnSave, btnDelete, btnCancel);
         HorizontalLayout nip = new HorizontalLayout(txtNip, btnGetFromCEIDG);
         add(nip, txtFullName, txtStreet, txtPostcode, txtTown, buttons);

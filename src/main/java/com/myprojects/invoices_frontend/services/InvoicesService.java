@@ -1,54 +1,59 @@
 package com.myprojects.invoices_frontend.services;
 
-import com.myprojects.invoices_frontend.domain.Customers;
+import com.myprojects.invoices_frontend.clients.InvoicesClient;
 import com.myprojects.invoices_frontend.domain.Invoices;
-import com.vaadin.flow.data.binder.Binder;
-import org.jetbrains.annotations.NotNull;
+import com.myprojects.invoices_frontend.domain.Products;
+import com.myprojects.invoices_frontend.mappers.InvoicesMapper;
+import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
 public class InvoicesService {
 
-    private Set<Invoices> invoices;
+    private List<Invoices> invoicesList;
+    private List<Products> productsList;
+    private static InvoicesClient invoicesClient;
     private static InvoicesService invoicesService;
-    private Binder<Invoices> binder = new Binder<>(Invoices.class);
+    private static InvoicesMapper invoicesMapper = new InvoicesMapper();
 
-    public InvoicesService() {
-        this.invoices = exampleData();
+    public InvoicesService(InvoicesClient invoicesClient) {
+        InvoicesService.invoicesClient = invoicesClient;
     }
 
     public static InvoicesService getInstance() {
         if (invoicesService == null) {
-            invoicesService = new InvoicesService();
+            invoicesService = new InvoicesService(invoicesClient);
         }
         return invoicesService;
     }
 
     public Set<Invoices> findByNumber(String number) {
-        return invoices.stream()
+        return invoicesList.stream()
                 .filter(i -> i.getNumber().contains(number))
                 .collect(Collectors.toSet());
     }
 
-    public Set<Invoices> getInvoices() {
-        return new HashSet<>(invoices);
+    public List<Invoices> getInvoicesList() {
+        invoicesList = invoicesMapper.mapToInvoicesList(invoicesClient.getInvoices());
+        return invoicesList;
     }
 
-    private @NotNull Set<Invoices> exampleData() {
-        Set<Invoices> invoices = new HashSet<>();
-        invoices.add(new Invoices(1L, "01/2022", new Date(2022-01-14),
-                new Customers()));
-        return invoices;
+    public void saveInvoice(Invoices invoice) {
+        invoicesClient.saveInvoice(invoicesMapper.mapToInvoiceDto(invoice));
     }
 
-    public void save(Invoices invoice) {
-        this.invoices.add(invoice);
+    public void addProductToInvoice(Products product) {
+        productsList.add(product);
     }
 
-    public void delete(Invoices invoice) {
-        this.invoices.remove(invoice);
+    public void updateInvoice(Invoices invoice) {
+        invoicesClient.updateInvoice(invoicesMapper.mapToInvoiceDto(invoice));
+    }
+
+    public void deleteInvoice(Invoices invoice) {
+        invoicesClient.deleteInvoice(invoicesMapper.mapToInvoiceDto(invoice));
     }
 }
