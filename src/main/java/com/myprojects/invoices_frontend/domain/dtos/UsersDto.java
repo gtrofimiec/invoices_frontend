@@ -6,36 +6,46 @@ import java.util.List;
 
 public class UsersDto {
 
-    @JsonProperty("user_id")
+    @JsonProperty
     private Long id;
-    @JsonProperty("full_name")
+    @JsonProperty
     private String fullName;
-    @JsonProperty("nip")
+    @JsonProperty
     private String nip;
-    @JsonProperty("street")
+    @JsonProperty
     private String street;
-    @JsonProperty("postcode")
-    private String postcode;
-    @JsonProperty("town")
+    @JsonProperty
+    private String postCode;
+    @JsonProperty
     private String town;
-    @JsonProperty("active")
+    @JsonProperty
     private boolean active;
-    @JsonProperty("invoices_list")
+    @JsonProperty
     private List<InvoicesDto> invoicesDtoList;
 
     public UsersDto() {
     }
 
-    public UsersDto(Long id, String fullName, String nip, String street, String postcode, String town,
+    public UsersDto(Long id, String fullName, String nip, String street, String postCode, String town,
                     boolean active, List<InvoicesDto> invoicesDtoList) {
         this.id = id;
         this.fullName = fullName;
         this.nip = nip;
         this.street = street;
-        this.postcode = postcode;
+        this.postCode = postCode;
         this.town = town;
         this.active = active;
         this.invoicesDtoList = invoicesDtoList;
+    }
+
+    public UsersDto(Long id, String fullName, String nip, String street, String postCode, String town, boolean active) {
+        this.id = id;
+        this.fullName = fullName;
+        this.nip = nip;
+        this.street = street;
+        this.postCode = postCode;
+        this.town = town;
+        this.active = active;
     }
 
     public Long getId() {
@@ -70,12 +80,12 @@ public class UsersDto {
         this.street = street;
     }
 
-    public String getPostcode() {
-        return postcode;
+    public String getPostCode() {
+        return postCode;
     }
 
-    public void setPostcode(String postcode) {
-        this.postcode = postcode;
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
     }
 
     public String getTown() {

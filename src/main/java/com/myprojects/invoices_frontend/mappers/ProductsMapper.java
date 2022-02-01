@@ -12,28 +12,28 @@ import java.util.stream.Collectors;
 public class ProductsMapper {
 
     public Products mapToProduct(@NotNull ProductsDto productDto) {
-        InvoicesMapper invoicesMapper = new InvoicesMapper();
+//        InvoicesMapper invoicesMapper = new InvoicesMapper();
         return new Products(
                 productDto.getId(),
                 productDto.getName(),
                 productDto.getVatRate(),
                 productDto.getNetPrice(),
                 productDto.getVatValue(),
-                productDto.getGrossPrice(),
-                invoicesMapper.mapToInvoicesList(productDto.getInvoicesDtoList())
+                productDto.getGrossPrice()
+//                invoicesMapper.mapToInvoicesList(productDto.getInvoicesDtoList())
         );
     }
 
     public ProductsDto mapToProductDto(@NotNull Products product) {
-        InvoicesMapper invoicesMapper = new InvoicesMapper();
+//        InvoicesMapper invoicesMapper = new InvoicesMapper();
         return new ProductsDto(
                 product.getId(),
                 product.getName(),
                 product.getVatRate(),
                 product.getNetPrice(),
                 product.getVatValue(),
-                product.getGrossPrice(),
-                invoicesMapper.mapToInvoicesDtoList(product.getInvoicesList())
+                product.getGrossPrice()
+//                invoicesMapper.mapToInvoicesDtoList(product.getInvoicesList())
         );
     }
 

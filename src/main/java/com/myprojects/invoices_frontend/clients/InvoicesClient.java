@@ -62,7 +62,6 @@ public class InvoicesClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         URI url = UriComponentsBuilder.fromHttpUrl(invoicesConfig.getInvoicesEndpoint())
-//                .path("/" + userId)
                 .build()
                 .encode()
                 .toUri();

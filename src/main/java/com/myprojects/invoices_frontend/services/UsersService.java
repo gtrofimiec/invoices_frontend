@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,13 +42,13 @@ public class UsersService {
     }
 
     public Users getActiveUser() {
-        if(usersList != null) {
-            return getUsersList().stream()
+        Users user = new Users();
+        if(getUsersList().size() > 0) {
+           user = usersList.stream()
                     .filter(Users::isActive)
                     .findFirst().get();
-        } else {
-            return new Users();
         }
+        return user;
     }
 
     public void saveUser(Users user) {

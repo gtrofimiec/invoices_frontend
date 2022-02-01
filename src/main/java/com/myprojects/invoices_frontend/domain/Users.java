@@ -31,6 +31,16 @@ public class Users {
         this.invoicesList = invoicesList;
     }
 
+    public Users(Long id, String fullName, String nip, String street, String postCode, String town, boolean active) {
+        this.id = id;
+        this.fullName = fullName;
+        this.nip = nip;
+        this.street = street;
+        this.postCode = postCode;
+        this.town = town;
+        this.active = active;
+    }
+
     public Long getId() {
         return id;
     }

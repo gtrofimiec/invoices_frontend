@@ -6,19 +6,19 @@ import java.util.List;
 
 public class CustomersDto {
 
-    @JsonProperty("customer_id")
+    @JsonProperty
     private Long id;
-    @JsonProperty("full_name")
+    @JsonProperty
     private String fullName;
-    @JsonProperty("nip")
+    @JsonProperty
     private String nip;
-    @JsonProperty("street")
+    @JsonProperty
     private String street;
-    @JsonProperty("postcode")
+    @JsonProperty
     private String postCode;
-    @JsonProperty("town")
+    @JsonProperty
     private String town;
-    @JsonProperty("invoices_list")
+    @JsonProperty
     private List<InvoicesDto> invoicesDtoList;
 
     public CustomersDto() {

@@ -72,8 +72,9 @@ public class CustomersForm extends FormLayout {
                 customersService.saveCustomer(customer);
             }
         }
-        mainView.refresh();
-        updateForm(customer);
+        this.setVisible(false);
+        mainView.gridCustomers.setItems(customersService.getCustomersList());
+//        updateForm(customer);
     }
 
     private void deleteCustomer() {

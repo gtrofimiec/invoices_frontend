@@ -10,21 +10,21 @@ import java.util.stream.Collectors;
 public class UsersMapper {
 
     public Users mapToUser(final @NotNull UsersDto userDto) {
-        InvoicesMapper invoicesMapper = new InvoicesMapper();
+//        InvoicesMapper invoicesMapper = new InvoicesMapper();
         return new Users(
                 userDto.getId(),
                 userDto.getFullName(),
                 userDto.getNip(),
                 userDto.getStreet(),
-                userDto.getPostcode(),
+                userDto.getPostCode(),
                 userDto.getTown(),
-                userDto.isActive(),
-                invoicesMapper.mapToInvoicesList(userDto.getInvoicesDtoList())
+                userDto.isActive()
+//                invoicesMapper.mapToInvoicesList(userDto.getInvoicesDtoList())
         );
     }
 
     public UsersDto mapToUserDto(final @NotNull Users user) {
-        InvoicesMapper invoicesMapper = new InvoicesMapper();
+//        InvoicesMapper invoicesMapper = new InvoicesMapper();
         return new UsersDto(
                 user.getId(),
                 user.getFullName(),
@@ -32,8 +32,8 @@ public class UsersMapper {
                 user.getStreet(),
                 user.getPostCode(),
                 user.getTown(),
-                user.isActive(),
-                invoicesMapper.mapToInvoicesDtoList(user.getInvoicesList())
+                user.isActive()
+//                invoicesMapper.mapToInvoicesDtoList(user.getInvoicesList())
         );
     }
 

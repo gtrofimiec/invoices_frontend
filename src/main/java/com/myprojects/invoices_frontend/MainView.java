@@ -18,6 +18,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 @Route
 public class MainView extends VerticalLayout {
 
@@ -25,6 +27,7 @@ public class MainView extends VerticalLayout {
     private ProductsService productsService = ProductsService.getInstance();
     private InvoicesService invoicesService = InvoicesService.getInstance();
     private UsersService userService = UsersService.getInstance();
+//    public Users activeUser = new Users();
 
     public Grid<Customers> gridCustomers = new Grid<>(Customers.class);
     public Grid<Customers> gridSelectCustomer = new Grid<>(Customers.class);
@@ -50,6 +53,7 @@ public class MainView extends VerticalLayout {
     private Button btnAddNewCustomer = new Button("Dodaj kontahenta ...");
     private Button btnAddNewProduct = new Button("Dodaj produkt ...");
     private Button btnAddNewInvoice = new Button("Dodaj fakturę ...");
+    private Button btnEditInvoice = new Button("Edytuj fakturę ...");
     private Button btnAddNewUser = new Button("Dodaj użytkownika ...");
     public HorizontalLayout mainContent = new HorizontalLayout();
     private HorizontalLayout mainToolbar = new HorizontalLayout();
@@ -64,8 +68,7 @@ public class MainView extends VerticalLayout {
         gridProducts.setColumns("name", "vatRate", "netPrice", "vatValue", "grossPrice");
         gridSelectProduct.setColumns("name", "vatRate", "netPrice", "vatValue", "grossPrice");
         gridNewInvoiceProductsList.setColumns("name", "vatRate", "netPrice", "vatValue", "grossPrice");
-        gridInvoices.setColumns("number", "date", "customer", "grossSum", "vatSum",
-                "netSum", "user");
+        gridInvoices.setColumns("number", "date", "customer", "grossSum", "vatSum", "netSum", "paymentMethod", "user");
         gridUser.setColumns("fullName", "nip", "street", "postCode", "town", "active");
         gridSelectUser.setColumns("fullName", "nip", "street", "postCode", "town", "active");
 
@@ -82,8 +85,7 @@ public class MainView extends VerticalLayout {
         btnAddNewProduct.setVisible(false);
         btnAddNewInvoice.setVisible(false);
         btnAddNewCustomer.setVisible(false);
-//        btnSelectCustomer.setVisible(false);
-//        btnSelectUser.setVisible(false);
+        btnEditInvoice.setVisible(false);
 
         newInvoiceHeaderToolbar.setVisible(false);
         newInvoiceFooterToolbar.setVisible(false);
@@ -92,17 +94,10 @@ public class MainView extends VerticalLayout {
         menuButtonClick(btnProducts, gridProducts, btnAddNewProduct, productsForm, txtProductsFilter);
         menuButtonClick(btnUser, gridUser, btnAddNewUser, userForm, txtUserFilter);
 
-        btnInvoices.addClickListener(e -> {
-            mainContent.removeAll();
-            mainContent.add(gridInvoices);
-            itemsToolbar.removeAll();
-            itemsToolbar.add(btnAddNewInvoice, txtInvoicesFilter);
-            gridInvoices.setVisible(true);
-            btnAddNewInvoice.setVisible(true);
-            txtInvoicesFilter.setVisible(true);
-        });
+        invoiceMenuClick();
 
         mainToolbar.add(btnCustomers, btnProducts, btnInvoices, btnUser);
+
         newInvoiceHeaderToolbar.add(
                 newInvoiceForm.txtNumber,
                 newInvoiceForm.txtDate,
@@ -112,6 +107,7 @@ public class MainView extends VerticalLayout {
                 newInvoiceForm.btnAddCustomer,
                 newInvoiceForm.txtPayment
         );
+
         newInvoiceFooterToolbar.add(
                 newInvoiceForm.txtNetSum,
                 newInvoiceForm.txtVatSum,
@@ -132,6 +128,11 @@ public class MainView extends VerticalLayout {
             gridProducts.asSingleSelect().clear();
             productsForm.updateForm(new Products());
         });
+        btnEditInvoice.addClickListener(e -> {
+            gridInvoices.asSingleSelect().clear();
+            btnEditInvoice.setVisible(true);
+            invoicesForm.updateForm(new Invoices());
+        });
         btnAddNewInvoice.addClickListener(e -> {
             mainContent.removeAll();
             mainContent.add(gridNewInvoiceProductsList);
@@ -140,6 +141,7 @@ public class MainView extends VerticalLayout {
             itemsToolbar.setVisible(false);
             newInvoiceHeaderToolbar.setVisible(true);
             newInvoiceFooterToolbar.setVisible(true);
+//            newInvoiceForm.updateForm(new Invoices());
         });
         btnAddNewUser.addClickListener(e -> {
             gridUser.asSingleSelect().clear();
@@ -166,11 +168,8 @@ public class MainView extends VerticalLayout {
                 customersForm.updateForm(gridCustomers.asSingleSelect().getValue()));
         gridProducts.asSingleSelect().addValueChangeListener(event ->
                 productsForm.updateForm(gridProducts.asSingleSelect().getValue()));
-        gridInvoices.asSingleSelect().addValueChangeListener(event -> {
-            invoicesForm.updateForm(gridInvoices.asSingleSelect().getValue());
-            invoicesForm.updateForm(new Invoices());
-
-        });
+        gridInvoices.asSingleSelect().addValueChangeListener(event ->
+            invoicesForm.updateForm(gridInvoices.asSingleSelect().getValue()));
         gridUser.asSingleSelect().addValueChangeListener(event ->
                 userForm.updateForm(gridUser.asSingleSelect().getValue()));
     }
@@ -180,8 +179,10 @@ public class MainView extends VerticalLayout {
         gridSelectCustomer.setItems(gridCustomers.getSelectedItems());
         gridProducts.setItems(productsService.getProductsList());
         gridInvoices.setItems(invoicesService.getInvoicesList());
-        gridUser.setItems(userService.getUsersList());
+        List<Users> usersList = userService.getUsersList();
+        gridUser.setItems(usersList);
         gridSelectUser.setItems(gridUser.getSelectedItems());
+//        activeUser = userService.getActiveUser();
     }
 
     public void menuButtonClick(@NotNull Button menuButton, Grid grid, Button button,
@@ -203,6 +204,19 @@ public class MainView extends VerticalLayout {
             if(newInvoiceFooterToolbar.isVisible()) {
                 newInvoiceFooterToolbar.setVisible(false);
             }
+        });
+    }
+
+    public void invoiceMenuClick() {
+        btnInvoices.addClickListener(e -> {
+            mainContent.removeAll();
+            mainContent.add(gridInvoices);
+            itemsToolbar.removeAll();
+            itemsToolbar.add(btnAddNewInvoice, btnEditInvoice, txtInvoicesFilter);
+            gridInvoices.setVisible(true);
+            gridInvoices.setItems(invoicesService.getInvoicesList());
+            btnAddNewInvoice.setVisible(true);
+            txtInvoicesFilter.setVisible(true);
         });
     }
 }

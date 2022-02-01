@@ -65,8 +65,9 @@ public class UserForm extends FormLayout {
                 usersService.saveUser(user);
             }
         }
-        mainView.refresh();
-        updateForm(user);
+        this.setVisible(false);
+        mainView.gridUser.setItems(usersService.getUsersList());
+//        updateForm(user);
     }
 
     private void deleteUser() {

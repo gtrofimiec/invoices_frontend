@@ -7,19 +7,19 @@ import java.util.List;
 
 public class ProductsDto {
 
-    @JsonProperty("product_id")
+    @JsonProperty
     private Long id;
-    @JsonProperty("name")
+    @JsonProperty
     private String name;
-    @JsonProperty("vat_rate")
+    @JsonProperty
     private int vatRate;
-    @JsonProperty("net_price")
+    @JsonProperty
     private BigDecimal netPrice;
-    @JsonProperty("vat_value")
+    @JsonProperty
     private BigDecimal vatValue;
-    @JsonProperty("gross_price")
+    @JsonProperty
     private BigDecimal grossPrice;
-    @JsonProperty("invoices_list")
+    @JsonProperty
     private List<InvoicesDto> invoicesDtoList;
 
     public ProductsDto() {
@@ -34,6 +34,16 @@ public class ProductsDto {
         this.vatValue = vatValue;
         this.grossPrice = grossPrice;
         this.invoicesDtoList = invoicesDtoList;
+    }
+
+    public ProductsDto(Long id, String name, int vatRate, BigDecimal netPrice, BigDecimal vatValue,
+                       BigDecimal grossPrice) {
+        this.id = id;
+        this.name = name;
+        this.vatRate = vatRate;
+        this.netPrice = netPrice;
+        this.vatValue = vatValue;
+        this.grossPrice = grossPrice;
     }
 
     public Long getId() {

@@ -31,6 +31,16 @@ public class Products {
         this.invoicesList = invoicesList;
     }
 
+    public Products(Long id, String name, int vatRate, BigDecimal netPrice, BigDecimal vatValue,
+                    BigDecimal grossPrice) {
+        this.id = id;
+        this.name = name;
+        this.vatRate = vatRate;
+        this.netPrice = netPrice;
+        this.vatValue = vatValue;
+        this.grossPrice = grossPrice;
+    }
+
     public Long getId() {
         return id;
     }

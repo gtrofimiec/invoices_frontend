@@ -79,8 +79,9 @@ public class ProductsForm extends FormLayout {
                 productService.saveProduct(product);
             }
         }
-        mainView.refresh();
-        updateForm(product);
+        this.setVisible(false);
+        mainView.gridProducts.setItems(productService.getProductsList());
+//        updateForm(product);
     }
 
     private void deleteProduct() {

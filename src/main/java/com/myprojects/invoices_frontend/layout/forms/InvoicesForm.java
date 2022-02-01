@@ -1,7 +1,9 @@
 package com.myprojects.invoices_frontend.layout.forms;
 
 import com.myprojects.invoices_frontend.MainView;
+import com.myprojects.invoices_frontend.domain.Customers;
 import com.myprojects.invoices_frontend.domain.Invoices;
+import com.myprojects.invoices_frontend.domain.Users;
 import com.myprojects.invoices_frontend.services.InvoicesService;
 import com.myprojects.invoices_frontend.services.UsersService;
 import com.vaadin.flow.component.button.Button;
@@ -27,16 +29,13 @@ public class InvoicesForm extends FormLayout {
     private TextField txtDate = new TextField("Data wystawienia");
     private TextField txtUser = new TextField("Sprzedawca");
     private TextField txtCustomer = new TextField("Kontrahent");
-    @PropertyId("netPrice")
-    private BigDecimalField txtNetPrice = new BigDecimalField("Cena netto",
-            new BigDecimal(0.00), "0.00");
-    @PropertyId("vatValue")
-    private BigDecimalField txtVatValue = new BigDecimalField("Wartość VAT",
-            new BigDecimal(0.00), "0.00");
-    @PropertyId("grossPrice")
-    private BigDecimalField txtGrossPrice = new BigDecimalField("Cena brutto",
-            new BigDecimal(0.00), "0.00");
-    @PropertyId("payment_method")
+    @PropertyId("netSum")
+    private BigDecimalField txtNetSum = new BigDecimalField("Wartość netto");
+    @PropertyId("vatSum")
+    private BigDecimalField txtVatSum = new BigDecimalField("Wartość VAT");
+    @PropertyId("grossSum")
+    private BigDecimalField txtGrossSum = new BigDecimalField("Wartość brutto");
+    @PropertyId("paymentMethod")
     private TextField txtPayment = new TextField("Forma płatności");
     private Button btnSave = new Button("Zapisz");
     private Button btnDelete = new Button("Usuń");
@@ -69,16 +68,16 @@ public class InvoicesForm extends FormLayout {
         btnChangeUser.addClickListener(event -> changeUser());
         btnChangeCustomer.addClickListener(event -> changeCustomer());
 
-        if(usersService.getUsersList().size() > 0) {
-            txtUser.setValue(usersService.getActiveUser().getFullName());
-        } else {
-            txtUser.setValue("");
-        }
+//        if(mainView.activeUser.getFullName() != null) {
+//            txtUser.setValue(mainView.activeUser.getFullName());
+//        } else {
+//            txtUser.setValue("");
+//        }
 
         HorizontalLayout buttons = new HorizontalLayout(btnSave, btnDelete, btnCancel);
         VerticalLayout userLayout = new VerticalLayout(txtUser, btnChangeUser);
         VerticalLayout customerLayout = new VerticalLayout(txtCustomer, btnChangeCustomer);
-        add(txtNumber, txtDate, userLayout, customerLayout, txtNetPrice, txtVatValue, txtGrossPrice,
+        add(txtNumber, txtDate, userLayout, customerLayout, txtNetSum, txtVatSum, txtGrossSum,
                 txtPayment, buttons);
         binder.forField(txtDate)
                 .withNullRepresentation("")

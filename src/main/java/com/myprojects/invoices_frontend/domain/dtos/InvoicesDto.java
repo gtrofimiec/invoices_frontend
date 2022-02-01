@@ -10,26 +10,29 @@ import java.util.List;
 
 public class InvoicesDto {
 
-    @JsonProperty("invoice_id")
+    @JsonProperty
     private Long id;
-    @JsonProperty("number")
+    @JsonProperty
     private String number;
-    @JsonProperty("date")
+    @JsonProperty
     private Date date;
-    @JsonProperty("net_sum")
+    @JsonProperty
     private BigDecimal netSum;
-    @JsonProperty("vat_sum")
+    @JsonProperty
     private BigDecimal vatSum;
-    @JsonProperty("gross_sum")
+    @JsonProperty
     private BigDecimal grossSum;
-    @JsonProperty("payment_method")
+    @JsonProperty
     private String paymentMethod;
-    @JsonProperty("customer_id")
+    @JsonProperty
     private CustomersDto customerDto;
-    @JsonProperty("user_id")
+    @JsonProperty
     private UsersDto userDto;
-    @JsonProperty("products_list")
+    @JsonProperty
     private List<ProductsDto> productsDtoList;
+
+    public InvoicesDto() {
+    }
 
     public InvoicesDto(Long id, String number, Date date, BigDecimal netSum, BigDecimal vatSum, BigDecimal grossSum,
                        String paymentMethod, CustomersDto customerDto, UsersDto userDto,
