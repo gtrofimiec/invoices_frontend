@@ -27,7 +27,6 @@ import java.util.List;
 
 public class NewInvoiceForm extends FormLayout {
 
-    Long newInvoiceId;
     @PropertyId("customer")
     Customers customer;
     @PropertyId("user")
@@ -61,13 +60,13 @@ public class NewInvoiceForm extends FormLayout {
     public Button btnAddProduct = new Button("Dodaj produkt ...");
     public Button btnSelectProduct = new Button("Wybierz ...");
     private Binder<Invoices> binderInvoices = new Binder<>(Invoices.class);
-    private Binder<Products> binderProducts = new Binder<>(Products.class);
+//    private Binder<Products> binderProducts = new Binder<>(Products.class);
     private MainView mainView;
     private InvoicesService invoicesService = InvoicesService.getInstance();
     private CustomersService customersService = CustomersService.getInstance();
     private UsersService usersService = UsersService.getInstance();
     private ProductsService productsService = ProductsService.getInstance();
-    private Users activeUser = new Users();
+    private Users activeUser;
 
     public NewInvoiceForm(@NotNull MainView mainView) {
         this.mainView = mainView;
@@ -76,6 +75,12 @@ public class NewInvoiceForm extends FormLayout {
         txtDate.setValue(String.valueOf(LocalDate.now()));
         txtDate.setPlaceholder("yyyy-mm-dd");
         txtPayment.setValue("przelew, 7 dni");
+        txtCustomer.setValue("");
+        txtNetSum.setValue(new BigDecimal("0.00"));
+        txtVatSum.setValue(new BigDecimal("0.00"));
+        txtGrossSum.setValue(new BigDecimal("0.00"));
+        productsList.clear();
+
         btnSave.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         btnCancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         btnAddUser.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -121,7 +126,7 @@ public class NewInvoiceForm extends FormLayout {
         );
         invoicesService.saveInvoice(newInvoice);
         cancel();
-        mainView.gridInvoices.setItems(invoicesService.getInvoicesList());
+//        mainView.gridInvoices.setItems(invoicesService.getInvoicesList());
 //        updateForm(newInvoice);
     }
 
@@ -130,6 +135,7 @@ public class NewInvoiceForm extends FormLayout {
         mainView.newInvoiceHeaderToolbar.setVisible(false);
         mainView.newInvoiceFooterToolbar.setVisible(false);
         mainView.itemsToolbar.setVisible(true);
+//        mainView.invoiceMenuClick();
     }
 
     public void updateForm(Invoices invoice) {
