@@ -1,11 +1,7 @@
 package com.myprojects.invoices_frontend.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.myprojects.invoices_frontend.domain.dtos.InvoicesDto;
-
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 public class Products {
 
@@ -95,5 +91,10 @@ public class Products {
 
     public void setInvoicesList(List<Invoices> invoicesList) {
         this.invoicesList = invoicesList;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

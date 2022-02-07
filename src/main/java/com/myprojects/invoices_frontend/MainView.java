@@ -4,7 +4,9 @@ import com.myprojects.invoices_frontend.domain.Customers;
 import com.myprojects.invoices_frontend.domain.Invoices;
 import com.myprojects.invoices_frontend.domain.Products;
 import com.myprojects.invoices_frontend.domain.Users;
+import com.myprojects.invoices_frontend.layout.dialogboxes.ShowNotification;
 import com.myprojects.invoices_frontend.layout.forms.*;
+import com.myprojects.invoices_frontend.layout.grids.GridCreator;
 import com.myprojects.invoices_frontend.services.CustomersService;
 import com.myprojects.invoices_frontend.services.InvoicesService;
 import com.myprojects.invoices_frontend.services.ProductsService;
@@ -18,85 +20,69 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 @Route
 public class MainView extends VerticalLayout {
 
-    private CustomersService customersService = CustomersService.getInstance();
-    private ProductsService productsService = ProductsService.getInstance();
-    private InvoicesService invoicesService = InvoicesService.getInstance();
-    private UsersService userService = UsersService.getInstance();
-//    public Users activeUser = new Users();
+    private final CustomersService customersService = CustomersService.getInstance();
+    private final ProductsService productsService = ProductsService.getInstance();
+    private final InvoicesService invoicesService = InvoicesService.getInstance();
+    private final UsersService userService = UsersService.getInstance();
 
     public Grid<Customers> gridCustomers = new Grid<>(Customers.class);
-    public Grid<Customers> gridSelectCustomer = new Grid<>(Customers.class);
-    public Grid<Products> gridProducts = new Grid<>(Products.class);
-    public Grid<Products> gridSelectProduct = new Grid<>(Products.class);
-    public Grid<Products> gridNewInvoiceProductsList = new Grid<>(Products.class);
     public Grid<Invoices> gridInvoices = new Grid<>(Invoices.class);
-    public Grid<Users> gridUser = new Grid<>(Users.class);
+    public Grid<Products> gridNewInvoiceProductsList = new Grid<>(Products.class);
+    public Grid<Products> gridProducts = new Grid<>(Products.class);
+    public Grid<Customers> gridSelectCustomer = new Grid<>(Customers.class);
+    public Grid<Products> gridSelectProduct = new Grid<>(Products.class);
     public Grid<Users> gridSelectUser = new Grid<>(Users.class);
+    public Grid<Users> gridUser = new Grid<>(Users.class);
     public TextField txtCustomersFilter = new TextField();
-    public TextField txtProductsFilter = new TextField();
     public TextField txtInvoicesFilter = new TextField();
+    public TextField txtProductsFilter = new TextField();
     public TextField txtUserFilter = new TextField();
-    private CustomersForm customersForm = new CustomersForm(this);
-    private ProductsForm productsForm = new ProductsForm(this);
-    private InvoicesForm invoicesForm = new InvoicesForm(this);
-    private NewInvoiceForm newInvoiceForm = new NewInvoiceForm(this);
-    private UserForm userForm = new UserForm(this);
-    private Button btnCustomers = new Button("Kontrahenci");
-    private Button btnProducts = new Button("Produkty");
-    private Button btnInvoices = new Button("Faktury");
-    private Button btnUser = new Button("Użytkownik");
-    private Button btnAddNewCustomer = new Button("Dodaj kontahenta ...");
-    private Button btnAddNewProduct = new Button("Dodaj produkt ...");
-    private Button btnAddNewInvoice = new Button("Dodaj fakturę ...");
-    private Button btnEditInvoice = new Button("Edytuj fakturę ...");
-    private Button btnAddNewUser = new Button("Dodaj użytkownika ...");
-    public HorizontalLayout mainContent = new HorizontalLayout();
-    private HorizontalLayout mainToolbar = new HorizontalLayout();
+    private final CustomersForm customersForm = new CustomersForm(this);
+    private final InvoicesForm invoicesForm = new InvoicesForm(this);
+    private final NewInvoiceForm newInvoiceForm = new NewInvoiceForm(this);
+    private final ProductsForm productsForm = new ProductsForm(this);
+    private final UserForm userForm = new UserForm(this);
+    private final Button btnAddNewCustomer = new Button("Dodaj kontahenta ...");
+    private final Button btnAddNewInvoice = new Button("Dodaj fakturę ...");
+    private final Button btnAddNewProduct = new Button("Dodaj produkt ...");
+    public Button btnCustomers = new Button("Kontrahenci");
+    private final Button btnAddNewUser = new Button("Dodaj użytkownika ...");
+    public Button btnInvoices = new Button("Faktury");
+    public Button btnProducts = new Button("Produkty");
+    public Button btnUser = new Button("Użytkownik");
     public HorizontalLayout itemsToolbar = new HorizontalLayout();
-    public HorizontalLayout newInvoiceHeaderToolbar = new HorizontalLayout();
+    public HorizontalLayout mainContent = new HorizontalLayout();
+    public HorizontalLayout mainToolbar = new HorizontalLayout();
     public HorizontalLayout newInvoiceFooterToolbar = new HorizontalLayout();
+    public HorizontalLayout newInvoiceHeaderToolbar = new HorizontalLayout();
 
     public MainView() {
 
-        gridCustomers.setColumns("fullName", "nip", "street", "postCode", "town");
-        gridSelectCustomer.setColumns("fullName", "nip", "street", "postCode", "town");
-        gridProducts.setColumns("name", "vatRate", "netPrice", "vatValue", "grossPrice");
-        gridSelectProduct.setColumns("name", "vatRate", "netPrice", "vatValue", "grossPrice");
-        gridNewInvoiceProductsList.setColumns("name", "vatRate", "netPrice", "vatValue", "grossPrice");
-        gridInvoices.setColumns("number", "date", "customer", "grossSum", "vatSum", "netSum", "paymentMethod", "user");
-        gridUser.setColumns("fullName", "nip", "street", "postCode", "town", "active");
-        gridSelectUser.setColumns("fullName", "nip", "street", "postCode", "town", "active");
+        GridCreator gridCreator = new GridCreator(this);
+        gridCreator.createCustomerGrid();
+        gridCreator.createSelectCustomerGrid();
+        gridCreator.createProductGrid();
+        gridCreator.createSelectProductGrid();
+        gridCreator.createInvoiceGrid();
+        gridCreator.createNewInvoiceProductsList();
+        gridCreator.createUserGrid();
+        gridCreator.createSelectUserGrid();
 
-        gridCustomers.setVisible(false);
-        gridSelectCustomer.setVisible(false);
-        gridProducts.setVisible(false);
-        gridSelectProduct.setVisible(false);
-        gridNewInvoiceProductsList.setVisible(false);
-        gridInvoices.setVisible(false);
-        gridUser.setVisible(false);
-        gridSelectUser.setVisible(false);
+        btnCustomers.addClickListener(e -> menuButtonClick(gridCustomers, btnAddNewCustomer,
+                customersForm, txtCustomersFilter));
+        btnProducts.addClickListener(e -> menuButtonClick(gridProducts, btnAddNewProduct,
+                productsForm, txtProductsFilter));
+        btnUser.addClickListener(e -> menuButtonClick(gridUser, btnAddNewUser, userForm, txtUserFilter));
+        btnInvoices.addClickListener(e -> invoiceMenuClick());
 
-        btnAddNewCustomer.setVisible(false);
-        btnAddNewProduct.setVisible(false);
-        btnAddNewInvoice.setVisible(false);
-        btnAddNewCustomer.setVisible(false);
-        btnEditInvoice.setVisible(false);
-
-        newInvoiceHeaderToolbar.setVisible(false);
-        newInvoiceFooterToolbar.setVisible(false);
-
-        menuButtonClick(btnCustomers, gridCustomers, btnAddNewCustomer, customersForm, txtCustomersFilter);
-        menuButtonClick(btnProducts, gridProducts, btnAddNewProduct, productsForm, txtProductsFilter);
-        menuButtonClick(btnUser, gridUser, btnAddNewUser, userForm, txtUserFilter);
-
-        invoiceMenuClick();
-
-        mainToolbar.add(btnCustomers, btnProducts, btnInvoices, btnUser);
+        mainToolbar.add(
+                btnCustomers,
+                btnProducts,
+                btnInvoices,
+                btnUser);
 
         newInvoiceHeaderToolbar.add(
                 newInvoiceForm.txtNumber,
@@ -122,16 +108,11 @@ public class MainView extends VerticalLayout {
 
         btnAddNewCustomer.addClickListener(e -> {
             gridCustomers.asSingleSelect().clear();
-            customersForm.updateForm(new Customers());
+            customersForm.updateCustomersForm(new Customers());
         });
         btnAddNewProduct.addClickListener(e -> {
             gridProducts.asSingleSelect().clear();
-            productsForm.updateForm(new Products());
-        });
-        btnEditInvoice.addClickListener(e -> {
-            gridInvoices.asSingleSelect().clear();
-            btnEditInvoice.setVisible(true);
-            invoicesForm.updateForm(new Invoices());
+            productsForm.updateProductsForm(new Products());
         });
         btnAddNewInvoice.addClickListener(e -> {
             mainContent.removeAll();
@@ -141,11 +122,15 @@ public class MainView extends VerticalLayout {
             itemsToolbar.setVisible(false);
             newInvoiceHeaderToolbar.setVisible(true);
             newInvoiceFooterToolbar.setVisible(true);
-//            newInvoiceForm.updateForm(new Invoices());
+            newInvoiceForm.clearNewInvoicesForm();
         });
         btnAddNewUser.addClickListener(e -> {
             gridUser.asSingleSelect().clear();
-            userForm.updateForm(new Users());
+            if(userService.getUsersList().size() == 0) {
+                userForm.updateUsersForm(new Users(true));
+            } else {
+                userForm.updateUsersForm(new Users());
+            }
         });
 
         mainContent.setSizeFull();
@@ -156,22 +141,53 @@ public class MainView extends VerticalLayout {
         gridUser.setSizeFull();
         gridSelectUser.setSizeFull();
 
-        add(mainToolbar, itemsToolbar, newInvoiceHeaderToolbar, mainContent, newInvoiceFooterToolbar);
-        customersForm.updateForm(null);
-        productsForm.updateForm(null);
-        invoicesForm.updateForm(null);
-        userForm.updateForm(null);
+        add(
+                mainToolbar,
+                itemsToolbar,
+                newInvoiceHeaderToolbar,
+                mainContent,
+                newInvoiceFooterToolbar
+        );
+
+        customersForm.updateCustomersForm(null);
+        productsForm.updateProductsForm(null);
+        invoicesForm.updateInvoicesForm(null);
+        userForm.updateUsersForm(null);
         setSizeFull();
         refresh();
 
+        gridCustomers.setVisible(false);
+        gridSelectCustomer.setVisible(false);
+        gridProducts.setVisible(false);
+        gridSelectProduct.setVisible(false);
+        gridNewInvoiceProductsList.setVisible(false);
+        gridInvoices.setVisible(false);
+
+        gridSelectUser.setVisible(false);
+
+        btnAddNewCustomer.setVisible(false);
+        btnAddNewProduct.setVisible(false);
+        btnAddNewInvoice.setVisible(false);
+        btnAddNewCustomer.setVisible(false);
+
+        newInvoiceHeaderToolbar.setVisible(false);
+        newInvoiceFooterToolbar.setVisible(false);
+
+        if(userService.getUsersList().isEmpty()) {
+            ShowNotification usersListEmpty =
+                    new ShowNotification("Wprowadź pierwszego użytkownika", 5000);
+            usersListEmpty.show();
+            menuButtonClick(gridUser, btnAddNewUser, userForm, txtUserFilter);
+        }
+
         gridCustomers.asSingleSelect().addValueChangeListener(event ->
-                customersForm.updateForm(gridCustomers.asSingleSelect().getValue()));
+                customersForm.updateCustomersForm(gridCustomers.asSingleSelect().getValue()));
         gridProducts.asSingleSelect().addValueChangeListener(event ->
-                productsForm.updateForm(gridProducts.asSingleSelect().getValue()));
+                productsForm.updateProductsForm(gridProducts.asSingleSelect().getValue()));
         gridInvoices.asSingleSelect().addValueChangeListener(event ->
-            invoicesForm.updateForm(gridInvoices.asSingleSelect().getValue()));
+                invoicesForm.updateInvoicesForm(gridInvoices.asSingleSelect().getValue()));
         gridUser.asSingleSelect().addValueChangeListener(event ->
-                userForm.updateForm(gridUser.asSingleSelect().getValue()));
+                userForm.updateUsersForm(gridUser.asSingleSelect().getValue()));
     }
 
     public void refresh() {
@@ -179,15 +195,12 @@ public class MainView extends VerticalLayout {
         gridSelectCustomer.setItems(gridCustomers.getSelectedItems());
         gridProducts.setItems(productsService.getProductsList());
         gridInvoices.setItems(invoicesService.getInvoicesList());
-        List<Users> usersList = userService.getUsersList();
-        gridUser.setItems(usersList);
+        gridUser.setItems(userService.getUsersList());
         gridSelectUser.setItems(gridUser.getSelectedItems());
-//        activeUser = userService.getActiveUser();
     }
 
-    public void menuButtonClick(@NotNull Button menuButton, Grid grid, Button button,
+    public void menuButtonClick(@NotNull Grid grid, Button button,
                                 FormLayout form, TextField filter) {
-        menuButton.addClickListener(e -> {
             mainContent.removeAll();
             mainContent.add(grid, form);
             itemsToolbar.removeAll();
@@ -204,19 +217,17 @@ public class MainView extends VerticalLayout {
             if(newInvoiceFooterToolbar.isVisible()) {
                 newInvoiceFooterToolbar.setVisible(false);
             }
-        });
     }
 
     public void invoiceMenuClick() {
-        btnInvoices.addClickListener(e -> {
-            mainContent.removeAll();
-            mainContent.add(gridInvoices);
-            itemsToolbar.removeAll();
-            itemsToolbar.add(btnAddNewInvoice, btnEditInvoice, txtInvoicesFilter);
-            gridInvoices.setVisible(true);
-            gridInvoices.setItems(invoicesService.getInvoicesList());
-            btnAddNewInvoice.setVisible(true);
-            txtInvoicesFilter.setVisible(true);
-        });
+        mainContent.removeAll();
+        mainContent.add(gridInvoices, invoicesForm);
+        itemsToolbar.removeAll();
+        itemsToolbar.add(btnAddNewInvoice, txtInvoicesFilter);
+        itemsToolbar.setVisible(true);
+        gridInvoices.setVisible(true);
+        gridInvoices.setItems(invoicesService.getInvoicesList());
+        btnAddNewInvoice.setVisible(true);
+        txtInvoicesFilter.setVisible(true);
     }
 }

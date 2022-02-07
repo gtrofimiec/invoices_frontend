@@ -54,19 +54,25 @@ public class ProductsForm extends FormLayout {
         btnSave.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         btnCancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
         btnSave.addClickListener(event -> saveProduct());
         btnDelete.addClickListener(event -> deleteProduct());
         btnCancel.addClickListener(event -> cancel());
         txtVatValue.addFocusListener(event -> calculateValues());
+
         HorizontalLayout buttons = new HorizontalLayout(btnSave, btnDelete, btnCancel);
+
         add(txtName, cmbVatRate, txtNetPrice, txtVatValue, txtGrossPrice, buttons);
+
         txtNetPrice.setLocale(Locale.ROOT);
         txtVatValue.setLocale(Locale.ROOT);
         txtGrossPrice.setLocale(Locale.ROOT);
+
         cmbVatRate.setItems(Arrays.stream(VatRate.values())
                 .map(VatRate::getValue)
                 .collect(Collectors.toList()));
         cmbVatRate.setValue(23);
+
         binder.bindInstanceFields(this);
     }
 
@@ -81,21 +87,20 @@ public class ProductsForm extends FormLayout {
         }
         this.setVisible(false);
         mainView.gridProducts.setItems(productService.getProductsList());
-//        updateForm(product);
     }
 
     private void deleteProduct() {
         Products product = binder.getBean();
         productService.deleteProduct(product);
-        mainView.refresh();
-        updateForm(null);
+        this.setVisible(false);
+        mainView.gridProducts.setItems(productService.getProductsList());
     }
 
     private void cancel() {
         this.setVisible(false);
     }
 
-    public void updateForm(Products product) {
+    public void updateProductsForm(Products product) {
         binder.setBean(product);
         if (product == null) {
             setVisible(false);

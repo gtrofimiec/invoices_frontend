@@ -1,11 +1,11 @@
 package com.myprojects.invoices_frontend.layout.forms;
 
 import com.myprojects.invoices_frontend.MainView;
-import com.myprojects.invoices_frontend.apis.ceidgapi.CeidgApiService;
-import com.myprojects.invoices_frontend.apis.postcodeapi.PostcodeApiService;
 import com.myprojects.invoices_frontend.domain.Customers;
 import com.myprojects.invoices_frontend.domain.dtos.CeidgApiDto;
+import com.myprojects.invoices_frontend.services.CeidgApiService;
 import com.myprojects.invoices_frontend.services.CustomersService;
+import com.myprojects.invoices_frontend.services.PostcodeApiService;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -41,6 +41,7 @@ public class CustomersForm extends FormLayout {
 
     public CustomersForm(@NotNull MainView mainView) {
         this.mainView = mainView;
+
         mainView.txtCustomersFilter.setPlaceholder("Filtruj po nazwie ...");
         mainView.txtCustomersFilter.setClearButtonVisible(true);
         mainView.txtCustomersFilter.setValueChangeMode(ValueChangeMode.EAGER);
@@ -74,21 +75,20 @@ public class CustomersForm extends FormLayout {
         }
         this.setVisible(false);
         mainView.gridCustomers.setItems(customersService.getCustomersList());
-//        updateForm(customer);
     }
 
     private void deleteCustomer() {
         Customers customer = binder.getBean();
         customersService.deleteCustomer(customer);
-        mainView.refresh();
-        updateForm(null);
+        this.setVisible(false);
+        mainView.gridCustomers.setItems(customersService.getCustomersList());
     }
 
     private void cancel() {
         this.setVisible(false);
     }
 
-    public void updateForm(Customers customer) {
+    public void updateCustomersForm(Customers customer) {
         binder.setBean(customer);
         if (customer == null) {
             setVisible(false);
@@ -112,10 +112,10 @@ public class CustomersForm extends FormLayout {
     private void getFromCEIDG(String nip) {
         binder.getFields().forEach(HasValue::clear);
         CeidgApiDto customerData = ceidgApiService.getData(nip);
+            txtNip.setValue(customerData.getNip());
             txtFullName.setValue(customerData.getFullName());
             txtStreet.setValue(customerData.getStreet() + " " + customerData.getBuilding());
             txtPostcode.setValue(customerData.getPostCode());
             txtTown.setValue(customerData.getTown());
-        mainView.refresh();
     }
 }

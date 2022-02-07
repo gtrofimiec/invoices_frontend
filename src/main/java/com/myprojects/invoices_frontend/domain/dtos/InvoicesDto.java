@@ -1,8 +1,6 @@
 package com.myprojects.invoices_frontend.domain.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.myprojects.invoices_frontend.domain.Customers;
-import com.myprojects.invoices_frontend.domain.Users;
 
 import java.math.BigDecimal;
 import java.util.Date;

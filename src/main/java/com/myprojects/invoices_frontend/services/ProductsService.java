@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,10 +28,10 @@ public class ProductsService {
         return productsService;
     }
 
-    public Set<Products> findByName(String name) {
+    public List<Products> findByName(String name) {
         return productsList.stream()
                 .filter(p -> p.getName().contains(name))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public List<Products> getProductsList() {

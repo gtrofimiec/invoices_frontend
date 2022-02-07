@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 public class UsersMapper {
 
     public Users mapToUser(final @NotNull UsersDto userDto) {
-//        InvoicesMapper invoicesMapper = new InvoicesMapper();
         return new Users(
                 userDto.getId(),
                 userDto.getFullName(),
@@ -19,12 +18,10 @@ public class UsersMapper {
                 userDto.getPostCode(),
                 userDto.getTown(),
                 userDto.isActive()
-//                invoicesMapper.mapToInvoicesList(userDto.getInvoicesDtoList())
         );
     }
 
     public UsersDto mapToUserDto(final @NotNull Users user) {
-//        InvoicesMapper invoicesMapper = new InvoicesMapper();
         return new UsersDto(
                 user.getId(),
                 user.getFullName(),
@@ -33,7 +30,6 @@ public class UsersMapper {
                 user.getPostCode(),
                 user.getTown(),
                 user.isActive()
-//                invoicesMapper.mapToInvoicesDtoList(user.getInvoicesList())
         );
     }
 

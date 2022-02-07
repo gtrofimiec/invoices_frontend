@@ -1,5 +1,6 @@
-package com.myprojects.invoices_frontend.apis.postcodeapi;
+package com.myprojects.invoices_frontend.services;
 
+import com.myprojects.invoices_frontend.clients.PostcodeApiClient;
 import com.myprojects.invoices_frontend.domain.dtos.PostcodeApiDto;
 import com.myprojects.invoices_frontend.exceptions.TownFromPostcodeNotFoundException;
 import org.springframework.stereotype.Service;

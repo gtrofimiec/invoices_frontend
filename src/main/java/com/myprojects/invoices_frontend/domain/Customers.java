@@ -1,11 +1,7 @@
 package com.myprojects.invoices_frontend.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-
 import java.util.List;
 
-@Data
 public class Customers {
 
     private Long id;
@@ -93,5 +89,10 @@ public class Customers {
 
     public void setInvoicesList(List<Invoices> invoicesList) {
         this.invoicesList = invoicesList;
+    }
+
+    @Override
+    public String toString() {
+        return fullName;
     }
 }

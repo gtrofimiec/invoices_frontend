@@ -1,12 +1,11 @@
 package com.myprojects.invoices_frontend.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 public class Invoices {
@@ -52,6 +51,19 @@ public class Invoices {
         this.productsList = productsList;
     }
 
+    public Invoices(Long id, String number, Date date, BigDecimal netSum, BigDecimal vatSum,
+                    BigDecimal grossSum, String paymentMethod, Customers customer, Users user) {
+        this.id = id;
+        this.number = number;
+        this.date = date;
+        this.netSum = netSum;
+        this.vatSum = vatSum;
+        this.grossSum = grossSum;
+        this.paymentMethod = paymentMethod;
+        this.customer = customer;
+        this.user = user;
+    }
+
     public Long getId() {
         return id;
     }
@@ -70,6 +82,12 @@ public class Invoices {
 
     public Date getDate() {
         return date;
+    }
+
+    public String getFormattedDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat(
+                "yyyy-MM-dd");
+        return formatter.format(date);
     }
 
     public void setDate(Date date) {
@@ -130,5 +148,10 @@ public class Invoices {
 
     public void setProductsList(List<Products> productsList) {
         this.productsList = productsList;
+    }
+
+    @Override
+    public String toString() {
+        return number;
     }
 }

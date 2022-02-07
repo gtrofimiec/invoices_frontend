@@ -1,6 +1,8 @@
-package com.myprojects.invoices_frontend.apis.ceidgapi;
+package com.myprojects.invoices_frontend.clients;
 
+import com.myprojects.invoices_frontend.config.CeidgApiConfig;
 import com.myprojects.invoices_frontend.domain.dtos.CeidgApiDto;
+import com.myprojects.invoices_frontend.layout.dialogboxes.ShowNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -33,17 +35,19 @@ public class CeidgApiClient {
 
         try {
             CeidgApiDto resEntity = restTemplate.getForObject(url, CeidgApiDto.class);
-
-            CeidgApiDto newCeidgApiDto = new CeidgApiDto(resEntity.getFullName(),
+            CeidgApiDto newCeidgApiDto = new CeidgApiDto(resEntity.getFullName(), nip,
                     resEntity.getStreet(),
                     resEntity.getBuilding(),
                     resEntity.getPostCode(),
                     resEntity.getTown());
-            if(resEntity.getFullName() != null) {
+            if(resEntity != null) {
                 LOGGER.info("Customer data from CEIDG database was succesfully get");
             }
             return newCeidgApiDto;
-        } catch (RestClientException e) {
+        } catch (RestClientException | NullPointerException e) {
+            ShowNotification notFoundNotification = new ShowNotification("Nie znaleziono w bazie CEIDG",
+                    5000);
+            notFoundNotification.show();
             LOGGER.error(e.getMessage(), e);
             return null;
         }

@@ -1,19 +1,13 @@
 package com.myprojects.invoices_frontend.domain.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({
-        "fullName",
-        "street",
-        "building",
-        "postCode",
-        "town"
-})
 public class CeidgApiDto {
 
     @JsonProperty("fullName")
     private String fullName;
+    @JsonProperty("nip")
+    private String nip;
     @JsonProperty("street")
     private String street;
     @JsonProperty("building")
@@ -34,8 +28,21 @@ public class CeidgApiDto {
         this.town = town;
     }
 
+    public CeidgApiDto(String fullName, String nip, String street, String building, String postCode, String town) {
+        this.fullName = fullName;
+        this.nip = nip;
+        this.street = street;
+        this.building = building;
+        this.postCode = postCode;
+        this.town = town;
+    }
+
     public String getFullName() {
         return fullName;
+    }
+
+    public String getNip() {
+        return nip;
     }
 
     public String getStreet() {

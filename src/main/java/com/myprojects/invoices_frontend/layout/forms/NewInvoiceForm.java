@@ -5,6 +5,7 @@ import com.myprojects.invoices_frontend.domain.Customers;
 import com.myprojects.invoices_frontend.domain.Invoices;
 import com.myprojects.invoices_frontend.domain.Products;
 import com.myprojects.invoices_frontend.domain.Users;
+import com.myprojects.invoices_frontend.layout.dialogboxes.ShowNotification;
 import com.myprojects.invoices_frontend.services.CustomersService;
 import com.myprojects.invoices_frontend.services.InvoicesService;
 import com.myprojects.invoices_frontend.services.ProductsService;
@@ -14,6 +15,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.PropertyId;
 import com.vaadin.flow.data.converter.StringToDateConverter;
@@ -50,7 +52,6 @@ public class NewInvoiceForm extends FormLayout {
             new BigDecimal("0.00"), "0.00");
     @PropertyId("paymentMethod")
     public TextField txtPayment = new TextField("Forma płatności");
-
     public Button btnSave = new Button("Zapisz");
     public Button btnCancel = new Button("Zamknij");
     public Button btnAddUser = new Button("Zmień ...");
@@ -60,7 +61,6 @@ public class NewInvoiceForm extends FormLayout {
     public Button btnAddProduct = new Button("Dodaj produkt ...");
     public Button btnSelectProduct = new Button("Wybierz ...");
     private Binder<Invoices> binderInvoices = new Binder<>(Invoices.class);
-//    private Binder<Products> binderProducts = new Binder<>(Products.class);
     private MainView mainView;
     private InvoicesService invoicesService = InvoicesService.getInstance();
     private CustomersService customersService = CustomersService.getInstance();
@@ -70,16 +70,7 @@ public class NewInvoiceForm extends FormLayout {
 
     public NewInvoiceForm(@NotNull MainView mainView) {
         this.mainView = mainView;
-
-        txtNumber.setValue("01/2022");
-        txtDate.setValue(String.valueOf(LocalDate.now()));
-        txtDate.setPlaceholder("yyyy-mm-dd");
-        txtPayment.setValue("przelew, 7 dni");
-        txtCustomer.setValue("");
-        txtNetSum.setValue(new BigDecimal("0.00"));
-        txtVatSum.setValue(new BigDecimal("0.00"));
-        txtGrossSum.setValue(new BigDecimal("0.00"));
-        productsList.clear();
+        clearNewInvoicesForm();
 
         btnSave.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         btnCancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -94,12 +85,13 @@ public class NewInvoiceForm extends FormLayout {
         btnSelectCustomer.addClickListener(event -> addCustomerToInvoice());
         btnSelectProduct.addClickListener(event -> addProductToList());
         btnSelectUser.addClickListener(event -> addUserToInvoice());
+
         btnSelectProduct.setVisible(false);
         btnSelectCustomer.setVisible(false);
         btnSelectUser.setVisible(false);
 
         activeUser = usersService.getActiveUser();
-        if(activeUser.getId() != null) {
+        if(activeUser.getFullName() != null) {
             user = activeUser;
             txtUser.setValue(activeUser.getFullName());
         } else {
@@ -111,7 +103,6 @@ public class NewInvoiceForm extends FormLayout {
                 .withConverter(new StringToDateConverter())
                 .bind(Invoices::getDate, Invoices::setDate);
         binderInvoices.bindInstanceFields(this);
-//        binderProducts.bindInstanceFields(this);
     }
 
     private void saveInvoice() {
@@ -124,28 +115,34 @@ public class NewInvoiceForm extends FormLayout {
                 txtPayment.getValue(),
                 customer, user, productsList
         );
-        invoicesService.saveInvoice(newInvoice);
-        cancel();
-//        mainView.gridInvoices.setItems(invoicesService.getInvoicesList());
-//        updateForm(newInvoice);
+        if(isInvoiceComplete(newInvoice)) {
+            invoicesService.saveInvoice(newInvoice);
+            cancel();
+        } else {
+            ShowNotification showNotification = new ShowNotification("Dane do faktury niekompletne", 5000);
+            showNotification.show();
+        }
     }
 
     private void cancel() {
-        this.setVisible(false);
         mainView.newInvoiceHeaderToolbar.setVisible(false);
         mainView.newInvoiceFooterToolbar.setVisible(false);
-        mainView.itemsToolbar.setVisible(true);
-//        mainView.invoiceMenuClick();
+        mainView.invoiceMenuClick();
     }
 
-    public void updateForm(Invoices invoice) {
-        binderInvoices.setBean(invoice);
-        if (invoice == null) {
-            setVisible(false);
-        } else {
-            setVisible(true);
-            txtNumber.focus();
-        }
+    public void clearNewInvoicesForm() {
+        txtNumber.setValue("01/2022");
+        txtDate.setValue(String.valueOf(LocalDate.now()));
+        txtDate.setPlaceholder("yyyy-mm-dd");
+        txtPayment.setValue("przelew, 7 dni");
+        txtCustomer.setValue("");
+        txtNetSum.setValue(new BigDecimal("0.00"));
+        txtNetSum.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+        txtVatSum.setValue(new BigDecimal("0.00"));
+        txtVatSum.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+        txtGrossSum.setValue(new BigDecimal("0.00"));
+        txtGrossSum.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+        productsList.clear();
     }
 
     private void selectUser() {
@@ -160,18 +157,6 @@ public class NewInvoiceForm extends FormLayout {
         mainView.gridSelectUser.setVisible(true);
     }
 
-    private void addUserToInvoice() {
-        user = mainView.gridSelectUser.asSingleSelect().getValue();
-        txtUser.setValue(user.getFullName());
-        btnSelectUser.setVisible(false);
-        mainView.mainContent.remove(mainView.gridSelectUser);
-        mainView.mainContent.add(mainView.gridNewInvoiceProductsList);
-        mainView.mainContent.add(this);
-        btnSave.setVisible(true);
-        btnCancel.setVisible(true);
-        btnAddUser.setVisible(true);
-    }
-
     private void selectCustomer() {
         mainView.mainContent.remove(mainView.gridNewInvoiceProductsList);
         mainView.mainContent.remove(this);
@@ -182,6 +167,18 @@ public class NewInvoiceForm extends FormLayout {
         mainView.gridSelectCustomer.setItems(customersService.getCustomersList());
         btnSelectCustomer.setVisible(true);
         mainView.gridSelectCustomer.setVisible(true);
+    }
+
+    private void addUserToInvoice() {
+        user = mainView.gridSelectUser.asSingleSelect().getValue();
+        txtUser.setValue(user.getFullName());
+        btnSelectUser.setVisible(false);
+        mainView.mainContent.remove(mainView.gridSelectUser);
+        mainView.mainContent.add(mainView.gridNewInvoiceProductsList);
+        mainView.mainContent.add(this);
+        btnSave.setVisible(true);
+        btnCancel.setVisible(true);
+        btnAddProduct.setVisible(true);
     }
 
     private void addCustomerToInvoice() {
@@ -211,17 +208,8 @@ public class NewInvoiceForm extends FormLayout {
     private void addProductToList() {
         Products product = mainView.gridSelectProduct.asSingleSelect().getValue();
         productsList.add(product);
-//        if(txtNetSum.getValue() == null) {
-//            txtNetSum.setValue(new BigDecimal("0.00"));
-//        }
         txtNetSum.setValue(txtNetSum.getValue().add(product.getNetPrice()));
-//        if(txtVatSum.getValue() == null) {
-//            txtVatSum.setValue(new BigDecimal("0.00"));
-//        }
         txtVatSum.setValue(txtVatSum.getValue().add(product.getVatValue()));
-//        if(txtGrossSum.getValue() == null) {
-//            txtGrossSum.setValue(new BigDecimal("0.00"));
-//        }
         txtGrossSum.setValue(txtGrossSum.getValue().add(product.getGrossPrice()));
         mainView.gridNewInvoiceProductsList.setItems(productsList);
         btnSelectProduct.setVisible(false);
@@ -231,5 +219,17 @@ public class NewInvoiceForm extends FormLayout {
         btnSave.setVisible(true);
         btnCancel.setVisible(true);
         btnAddProduct.setVisible(true);
+    }
+
+    boolean isInvoiceComplete(@NotNull Invoices invoice) {
+        return !invoice.getNumber().isEmpty() &&
+                !invoice.getDate().toString().isEmpty() &&
+                !invoice.getNetSum().toString().isEmpty() &&
+                !invoice.getVatSum().toString().isEmpty() &&
+                !invoice.getGrossSum().toString().isEmpty() &&
+                !invoice.getPaymentMethod().isEmpty() &&
+                invoice.getCustomer() != null &&
+                invoice.getUser() != null &&
+                !invoice.getProductsList().isEmpty();
     }
 }

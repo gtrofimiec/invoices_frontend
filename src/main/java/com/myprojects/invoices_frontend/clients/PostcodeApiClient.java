@@ -1,9 +1,9 @@
-package com.myprojects.invoices_frontend.apis.postcodeapi;
+package com.myprojects.invoices_frontend.clients;
 
+import com.myprojects.invoices_frontend.config.PostcodeApiConfig;
 import com.myprojects.invoices_frontend.domain.dtos.PostcodeApiDto;
 import com.myprojects.invoices_frontend.exceptions.TownFromPostcodeNotFoundException;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.server.Page;
+import com.myprojects.invoices_frontend.layout.dialogboxes.ShowNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,11 @@ public class PostcodeApiClient {
                 LOGGER.info("Town name from postcode database was succesfully get");
             }
             return new PostcodeApiDto(townResponse.getTown());
-        } catch (ResponseStatusException | ResourceAccessException e) {
+        } catch (ResponseStatusException | ResourceAccessException | NullPointerException e) {
+            ShowNotification notFoundNotification = new ShowNotification("Nie znaleziono w bazie kodów " +
+                    "pocztowych. Sprawdź wprowadzony kod i spróbuj jeszcze raz",
+                    5000);
+            notFoundNotification.show();
             LOGGER.error(e.getMessage());
             return null;
         }

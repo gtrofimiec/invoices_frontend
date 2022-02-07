@@ -1,9 +1,7 @@
 package com.myprojects.invoices_frontend.clients;
 
 import com.myprojects.invoices_frontend.config.InvoicesConfig;
-import com.myprojects.invoices_frontend.domain.Customers;
 import com.myprojects.invoices_frontend.domain.Invoices;
-import com.myprojects.invoices_frontend.domain.dtos.CustomersDto;
 import com.myprojects.invoices_frontend.domain.dtos.InvoicesDto;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;

@@ -1,5 +1,6 @@
-package com.myprojects.invoices_frontend.apis.ceidgapi;
+package com.myprojects.invoices_frontend.services;
 
+import com.myprojects.invoices_frontend.clients.CeidgApiClient;
 import com.myprojects.invoices_frontend.domain.dtos.CeidgApiDto;
 import com.myprojects.invoices_frontend.exceptions.CustomerDataNotFoundException;
 import org.springframework.stereotype.Service;

@@ -26,17 +26,6 @@ public class ProductsDto {
     }
 
     public ProductsDto(Long id, String name, int vatRate, BigDecimal netPrice, BigDecimal vatValue,
-                       BigDecimal grossPrice, List<InvoicesDto> invoicesDtoList) {
-        this.id = id;
-        this.name = name;
-        this.vatRate = vatRate;
-        this.netPrice = netPrice;
-        this.vatValue = vatValue;
-        this.grossPrice = grossPrice;
-        this.invoicesDtoList = invoicesDtoList;
-    }
-
-    public ProductsDto(Long id, String name, int vatRate, BigDecimal netPrice, BigDecimal vatValue,
                        BigDecimal grossPrice) {
         this.id = id;
         this.name = name;

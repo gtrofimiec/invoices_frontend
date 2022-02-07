@@ -1,8 +1,8 @@
 package com.myprojects.invoices_frontend.layout.forms;
 
 import com.myprojects.invoices_frontend.MainView;
-import com.myprojects.invoices_frontend.apis.postcodeapi.PostcodeApiService;
 import com.myprojects.invoices_frontend.domain.Users;
+import com.myprojects.invoices_frontend.services.PostcodeApiService;
 import com.myprojects.invoices_frontend.services.UsersService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -28,7 +28,7 @@ public class UserForm extends FormLayout {
     @PropertyId("town")
     private TextField txtTown = new TextField("Miejsowość");
     @PropertyId("active")
-    private Checkbox chkIsActive = new Checkbox("Aktywny");
+    private Checkbox chkIsActive = new Checkbox("Domyślny");
     private Button btnSave = new Button("Zapisz");
     private Button btnDelete = new Button("Usuń");
     private Button btnCancel = new Button("Zamknij");
@@ -67,21 +67,20 @@ public class UserForm extends FormLayout {
         }
         this.setVisible(false);
         mainView.gridUser.setItems(usersService.getUsersList());
-//        updateForm(user);
     }
 
     private void deleteUser() {
         Users user = binder.getBean();
         usersService.deleteUser(user);
-        mainView.refresh();
-        updateForm(null);
+        this.setVisible(false);
+        mainView.gridUser.setItems(usersService.getUsersList());
     }
 
     private void cancel() {
         this.setVisible(false);
     }
 
-    public void updateForm(Users user) {
+    public void updateUsersForm(Users user) {
         binder.setBean(user);
         if (user == null) {
             setVisible(false);

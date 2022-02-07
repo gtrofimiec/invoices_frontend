@@ -11,7 +11,6 @@ public class PostcodeApiDto {
     @JsonProperty("wojewodztwo")
     private String voivodeship;
 
-
     public PostcodeApiDto() {
     }
 

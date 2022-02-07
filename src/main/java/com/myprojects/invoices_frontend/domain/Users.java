@@ -1,10 +1,7 @@
 package com.myprojects.invoices_frontend.domain;
 
-import lombok.Data;
-
 import java.util.List;
 
-@Data
 public class Users {
 
     private Long id;
@@ -19,16 +16,8 @@ public class Users {
     public Users() {
     }
 
-    public Users(Long id, String fullName, String nip, String street, String postCode, String town,
-                 boolean active, List<Invoices> invoicesList) {
-        this.id = id;
-        this.fullName = fullName;
-        this.nip = nip;
-        this.street = street;
-        this.postCode = postCode;
-        this.town = town;
+    public Users(boolean active) {
         this.active = active;
-        this.invoicesList = invoicesList;
     }
 
     public Users(Long id, String fullName, String nip, String street, String postCode, String town, boolean active) {
@@ -103,5 +92,10 @@ public class Users {
 
     public void setInvoicesList(List<Invoices> invoicesList) {
         this.invoicesList = invoicesList;
+    }
+
+    @Override
+    public String toString() {
+        return fullName;
     }
 }

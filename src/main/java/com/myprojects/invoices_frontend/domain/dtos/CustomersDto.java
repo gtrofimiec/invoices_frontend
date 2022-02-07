@@ -23,18 +23,7 @@ public class CustomersDto {
 
     public CustomersDto() {
     }
-
-    public CustomersDto(Long id, String fullName, String nip, String street, String postCode, String town,
-                        List<InvoicesDto> invoicesDtoList) {
-        this.id = id;
-        this.fullName = fullName;
-        this.nip = nip;
-        this.street = street;
-        this.postCode = postCode;
-        this.town = town;
-        this.invoicesDtoList = invoicesDtoList;
-    }
-
+//
     public CustomersDto(Long id, String fullName, String nip, String street, String postCode, String town) {
         this.id = id;
         this.fullName = fullName;
