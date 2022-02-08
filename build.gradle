@@ -24,7 +24,6 @@ dependencies {
     implementation 'org.jetbrains:annotations:22.0.0'
     implementation 'org.vaadin.spring.addons:vaadin-spring-addon-i18n:2.0.0.RELEASE'
     implementation 'org.vaadin.spring.addons:vaadin-spring-addon-portlet:2.0.0.RELEASE'
-//    implementation 'com.vaadin:vaadin-flow-components:22.0.4'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
