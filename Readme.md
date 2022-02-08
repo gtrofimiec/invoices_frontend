@@ -52,4 +52,5 @@ I would like to add:
 - generating invoices to pdf and printing them.
 
 ## Links:
-- 
+- backend repo: https://github.com/gtrofimiec/Invoices.git
+- last commit: https://github.com/gtrofimiec/invoices_frontend/tree/b165fd806b37df544dfe093af78c89e680afede4
