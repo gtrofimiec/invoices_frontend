@@ -3,7 +3,7 @@ package com.myprojects.invoices_frontend.domain.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class InvoicesDto {
@@ -13,7 +13,7 @@ public class InvoicesDto {
     @JsonProperty
     private String number;
     @JsonProperty
-    private Date date;
+    private LocalDate date;
     @JsonProperty
     private BigDecimal netSum;
     @JsonProperty
@@ -22,6 +22,8 @@ public class InvoicesDto {
     private BigDecimal grossSum;
     @JsonProperty
     private String paymentMethod;
+    @JsonProperty
+    private LocalDate paymentDate;
     @JsonProperty
     private CustomersDto customerDto;
     @JsonProperty
@@ -32,9 +34,9 @@ public class InvoicesDto {
     public InvoicesDto() {
     }
 
-    public InvoicesDto(Long id, String number, Date date, BigDecimal netSum, BigDecimal vatSum, BigDecimal grossSum,
-                       String paymentMethod, CustomersDto customerDto, UsersDto userDto,
-                       List<ProductsDto> productsDtoList) {
+    public InvoicesDto(Long id, String number, LocalDate date, BigDecimal netSum, BigDecimal vatSum,
+                       BigDecimal grossSum, String paymentMethod, LocalDate paymentDate,
+                       CustomersDto customerDto, UsersDto userDto, List<ProductsDto> productsDtoList) {
         this.id = id;
         this.number = number;
         this.date = date;
@@ -42,6 +44,7 @@ public class InvoicesDto {
         this.vatSum = vatSum;
         this.grossSum = grossSum;
         this.paymentMethod = paymentMethod;
+        this.paymentDate = paymentDate;
         this.customerDto = customerDto;
         this.userDto = userDto;
         this.productsDtoList = productsDtoList;
@@ -63,11 +66,11 @@ public class InvoicesDto {
         this.number = number;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -101,6 +104,14 @@ public class InvoicesDto {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public LocalDate getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(LocalDate paymentDate) {
+        this.paymentDate = paymentDate;
     }
 
     public CustomersDto getCustomerDto() {

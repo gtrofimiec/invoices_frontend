@@ -21,6 +21,7 @@ public class InvoicesMapper {
                 invoiceDto.getVatSum(),
                 invoiceDto.getGrossSum(),
                 invoiceDto.getPaymentMethod(),
+                invoiceDto.getPaymentDate(),
                 customersMapper.mapToCustomer(invoiceDto.getCustomerDto()),
                 usersMapper.mapToUser(invoiceDto.getUserDto()),
                 productsMapper.mapToProductsList(invoiceDto.getProductsDtoList())
@@ -39,6 +40,7 @@ public class InvoicesMapper {
                 invoice.getVatSum(),
                 invoice.getGrossSum(),
                 invoice.getPaymentMethod(),
+                invoice.getPaymentDate(),
                 customersMapper.mapToCustomerDto(invoice.getCustomer()),
                 usersMapper.mapToUserDto(invoice.getUser()),
                 productsMapper.mapToProductsDtoList(invoice.getProductsList())

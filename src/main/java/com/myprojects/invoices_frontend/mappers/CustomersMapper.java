@@ -16,7 +16,8 @@ public class CustomersMapper {
                 customerDto.getNip(),
                 customerDto.getStreet(),
                 customerDto.getPostCode(),
-                customerDto.getTown()
+                customerDto.getTown(),
+                customerDto.getMail()
         );
     }
 
@@ -27,7 +28,8 @@ public class CustomersMapper {
                 customer.getNip(),
                 customer.getStreet(),
                 customer.getPostCode(),
-                customer.getTown()
+                customer.getTown(),
+                customer.getMail()
         );
     }
 

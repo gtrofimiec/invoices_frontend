@@ -10,6 +10,9 @@ public class Users {
     private String street;
     private String postCode;
     private String town;
+    private String bank;
+    private String accountNumber;
+    private String pdfPath;
     private boolean active;
     private List<Invoices> invoicesList;
 
@@ -20,13 +23,17 @@ public class Users {
         this.active = active;
     }
 
-    public Users(Long id, String fullName, String nip, String street, String postCode, String town, boolean active) {
+    public Users(Long id, String fullName, String nip, String street, String postCode, String town,
+                 String bank, String accountNumber, String pdfPath, boolean active) {
         this.id = id;
         this.fullName = fullName;
         this.nip = nip;
         this.street = street;
         this.postCode = postCode;
         this.town = town;
+        this.bank = bank;
+        this.accountNumber = accountNumber;
+        this.pdfPath = pdfPath;
         this.active = active;
     }
 
@@ -76,6 +83,30 @@ public class Users {
 
     public void setTown(String town) {
         this.town = town;
+    }
+
+    public String getBank() {
+        return bank;
+    }
+
+    public void setBank(String bank) {
+        this.bank = bank;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public String getPdfPath() {
+        return pdfPath;
+    }
+
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
     }
 
     public boolean isActive() {

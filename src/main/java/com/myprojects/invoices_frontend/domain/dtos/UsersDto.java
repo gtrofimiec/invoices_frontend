@@ -19,6 +19,12 @@ public class UsersDto {
     @JsonProperty
     private String town;
     @JsonProperty
+    private String bank;
+    @JsonProperty
+    private String accountNumber;
+    @JsonProperty
+    private String pdfPath;
+    @JsonProperty
     private boolean active;
     @JsonProperty
     private List<InvoicesDto> invoicesDtoList;
@@ -26,13 +32,22 @@ public class UsersDto {
     public UsersDto() {
     }
 
-    public UsersDto(Long id, String fullName, String nip, String street, String postCode, String town, boolean active) {
+    public UsersDto(String fullName, boolean active) {
+        this.fullName = fullName;
+        this.active = active;
+    }
+
+    public UsersDto(Long id, String fullName, String nip, String street, String postCode, String town,
+                    String bank, String accountNumber, String pdfPath, boolean active) {
         this.id = id;
         this.fullName = fullName;
         this.nip = nip;
         this.street = street;
         this.postCode = postCode;
         this.town = town;
+        this.bank = bank;
+        this.accountNumber = accountNumber;
+        this.pdfPath = pdfPath;
         this.active = active;
     }
 
@@ -82,6 +97,30 @@ public class UsersDto {
 
     public void setTown(String town) {
         this.town = town;
+    }
+
+    public String getBank() {
+        return bank;
+    }
+
+    public void setBank(String bank) {
+        this.bank = bank;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public String getPdfPath() {
+        return pdfPath;
+    }
+
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
     }
 
     public boolean isActive() {

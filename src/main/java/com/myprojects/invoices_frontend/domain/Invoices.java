@@ -1,10 +1,10 @@
 package com.myprojects.invoices_frontend.domain;
 
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -12,11 +12,12 @@ public class Invoices {
 
     private Long id;
     private String number;
-    private Date date;
+    private LocalDate date;
     private BigDecimal netSum;
     private BigDecimal vatSum;
     private BigDecimal grossSum;
     private String paymentMethod;
+    private LocalDate paymentDate;
     private Customers customer;
     private Users user;
     private List<Products> productsList;
@@ -24,8 +25,9 @@ public class Invoices {
     public Invoices() {
     }
 
-    public Invoices(Long id, String number, Date date, BigDecimal netSum, BigDecimal vatSum, BigDecimal grossSum,
-                    String paymentMethod, Customers customer, Users user, List<Products> productsList) {
+    public Invoices(Long id, String number, LocalDate date, BigDecimal netSum, BigDecimal vatSum,
+                    BigDecimal grossSum, String paymentMethod, LocalDate paymentDate, Customers customer,
+                    Users user, List<Products> productsList) {
         this.id = id;
         this.number = number;
         this.date = date;
@@ -33,26 +35,30 @@ public class Invoices {
         this.vatSum = vatSum;
         this.grossSum = grossSum;
         this.paymentMethod = paymentMethod;
+        this.paymentDate = paymentDate;
         this.customer = customer;
         this.user = user;
         this.productsList = productsList;
     }
 
-    public Invoices(String number, Date date, BigDecimal netSum, BigDecimal vatSum, BigDecimal grossSum,
-                    String paymentMethod, Customers customer, Users user, List<Products> productsList) {
+    public Invoices(String number, LocalDate date, BigDecimal netSum, BigDecimal vatSum, BigDecimal grossSum,
+                    String paymentMethod, LocalDate paymentDate, Customers customer, Users user,
+                    List<Products> productsList) {
         this.number = number;
         this.date = date;
         this.netSum = netSum;
         this.vatSum = vatSum;
         this.grossSum = grossSum;
         this.paymentMethod = paymentMethod;
+        this.paymentDate = paymentDate;
         this.customer = customer;
         this.user = user;
         this.productsList = productsList;
     }
 
-    public Invoices(Long id, String number, Date date, BigDecimal netSum, BigDecimal vatSum,
-                    BigDecimal grossSum, String paymentMethod, Customers customer, Users user) {
+    public Invoices(Long id, String number, LocalDate date, BigDecimal netSum, BigDecimal vatSum,
+                    BigDecimal grossSum, String paymentMethod, LocalDate paymentDate, Customers customer,
+                    Users user) {
         this.id = id;
         this.number = number;
         this.date = date;
@@ -60,6 +66,7 @@ public class Invoices {
         this.vatSum = vatSum;
         this.grossSum = grossSum;
         this.paymentMethod = paymentMethod;
+        this.paymentDate = paymentDate;
         this.customer = customer;
         this.user = user;
     }
@@ -80,17 +87,11 @@ public class Invoices {
         this.number = number;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public String getFormattedDate() {
-        SimpleDateFormat formatter = new SimpleDateFormat(
-                "yyyy-MM-dd");
-        return formatter.format(date);
-    }
-
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -126,6 +127,14 @@ public class Invoices {
         this.paymentMethod = paymentMethod;
     }
 
+    public LocalDate getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(LocalDate paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
     public Customers getCustomer() {
         return customer;
     }
@@ -148,6 +157,12 @@ public class Invoices {
 
     public void setProductsList(List<Products> productsList) {
         this.productsList = productsList;
+    }
+
+    public Long getProductQuantity(Products product, @NotNull List<Products> productsList) {
+        return productsList.stream()
+                .filter(p -> p.equals(product))
+                .count();
     }
 
     @Override

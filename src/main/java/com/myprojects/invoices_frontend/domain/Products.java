@@ -7,6 +7,9 @@ public class Products {
 
     private Long id;
     private String name;
+    private String pkwiu;
+    private Long quantity;
+    private String measureUnit;
     private int vatRate;
     private BigDecimal netPrice;
     private BigDecimal vatValue;
@@ -16,10 +19,13 @@ public class Products {
     public Products() {
     }
 
-    public Products(Long id, String name, int vatRate, BigDecimal netPrice, BigDecimal vatValue, BigDecimal grossPrice,
+    public Products(Long id, String name, String pkwiu, String measureUnit, int vatRate,
+                    BigDecimal netPrice, BigDecimal vatValue, BigDecimal grossPrice,
                     List<Invoices> invoicesList) {
         this.id = id;
         this.name = name;
+        this.pkwiu = pkwiu;
+        this.measureUnit = measureUnit;
         this.vatRate = vatRate;
         this.netPrice = netPrice;
         this.vatValue = vatValue;
@@ -27,10 +33,12 @@ public class Products {
         this.invoicesList = invoicesList;
     }
 
-    public Products(Long id, String name, int vatRate, BigDecimal netPrice, BigDecimal vatValue,
-                    BigDecimal grossPrice) {
+    public Products(Long id, String name, String pkwiu, String measureUnit, int vatRate,
+                    BigDecimal netPrice, BigDecimal vatValue, BigDecimal grossPrice) {
         this.id = id;
         this.name = name;
+        this.pkwiu = pkwiu;
+        this.measureUnit = measureUnit;
         this.vatRate = vatRate;
         this.netPrice = netPrice;
         this.vatValue = vatValue;
@@ -51,6 +59,30 @@ public class Products {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPkwiu() {
+        return pkwiu;
+    }
+
+    public void setPkwiu(String pkwiu) {
+        this.pkwiu = pkwiu;
+    }
+
+    public Long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getMeasureUnit() {
+        return measureUnit;
+    }
+
+    public void setMeasureUnit(String measureUnit) {
+        this.measureUnit = measureUnit;
     }
 
     public int getVatRate() {

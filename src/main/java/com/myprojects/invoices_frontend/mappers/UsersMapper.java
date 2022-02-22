@@ -17,6 +17,9 @@ public class UsersMapper {
                 userDto.getStreet(),
                 userDto.getPostCode(),
                 userDto.getTown(),
+                userDto.getBank(),
+                userDto.getAccountNumber(),
+                userDto.getPdfPath(),
                 userDto.isActive()
         );
     }
@@ -29,6 +32,9 @@ public class UsersMapper {
                 user.getStreet(),
                 user.getPostCode(),
                 user.getTown(),
+                user.getBank(),
+                user.getAccountNumber(),
+                user.getPdfPath(),
                 user.isActive()
         );
     }

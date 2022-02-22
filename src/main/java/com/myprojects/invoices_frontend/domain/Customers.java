@@ -10,29 +10,33 @@ public class Customers {
     private String street;
     private String postCode;
     private String town;
+    private String mail;
     private List<Invoices> invoicesList;
 
     public Customers() {
     }
 
     public Customers(Long id, String fullName, String nip, String street, String postCode, String town,
-                     List<Invoices> invoicesList) {
+                     String mail, List<Invoices> invoicesList) {
         this.id = id;
         this.fullName = fullName;
         this.nip = nip;
         this.street = street;
         this.postCode = postCode;
         this.town = town;
+        this.mail = mail;
         this.invoicesList = invoicesList;
     }
 
-    public Customers(Long id, String fullName, String nip, String street, String postCode, String town) {
+    public Customers(Long id, String fullName, String nip, String street, String postCode, String town,
+                     String mail) {
         this.id = id;
         this.fullName = fullName;
         this.nip = nip;
         this.street = street;
         this.postCode = postCode;
         this.town = town;
+        this.mail = mail;
     }
 
     public Long getId() {
@@ -81,6 +85,14 @@ public class Customers {
 
     public void setTown(String town) {
         this.town = town;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public List<Invoices> getInvoicesList() {

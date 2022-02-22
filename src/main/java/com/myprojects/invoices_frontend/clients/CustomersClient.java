@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -51,6 +52,9 @@ public class CustomersClient {
             }
 
         } catch (RestClientException e) {
+            if(e.contains(ResourceAccessException.class)) {
+                LOGGER.error("No connection to database");
+            }
             LOGGER.error(e.getMessage(), e);
             return new ArrayList<>();
         }
@@ -67,9 +71,12 @@ public class CustomersClient {
             HttpEntity<CustomersDto> request = new HttpEntity<>(customerDto, headers);
             Customers sentCustomer = restTemplate.postForObject(url, request, Customers.class);
             if(sentCustomer != null) {
-                LOGGER.info("Customer " + sentCustomer.getFullName() + " has been correctly sent");
+                LOGGER.info("Customer " + sentCustomer.getFullName() + " has been correctly sent to database");
             }
         } catch (RestClientException e) {
+            if(e.contains(ResourceAccessException.class)) {
+                LOGGER.error("No connection to database");
+            }
             LOGGER.error(e.getMessage(), e);
         }
     }
@@ -85,8 +92,11 @@ public class CustomersClient {
         try {
             HttpEntity<CustomersDto> request = new HttpEntity<>(customerDto, headers);
             restTemplate.exchange(url, HttpMethod.PUT, request, CustomersDto.class);
-            LOGGER.info("Customer " + customerDto.getFullName() + " has been updated");
+            LOGGER.info("Customer " + customerDto.getFullName() + " has been updated in database");
         } catch (RestClientException e) {
+            if(e.contains(ResourceAccessException.class)) {
+                LOGGER.error("No connection to database");
+            }
             LOGGER.error(e.getMessage(), e);
         }
     }
@@ -99,8 +109,11 @@ public class CustomersClient {
                 .toUri();
         try {
             restTemplate.delete(url);
-            LOGGER.info("Customer " + customerDto.getFullName() + "has been deleted");
+            LOGGER.info("Customer " + customerDto.getFullName() + " has been deleted");
         } catch (RestClientException e) {
+            if(e.contains(ResourceAccessException.class)) {
+                LOGGER.error("No connection to database");
+            }
             LOGGER.error(e.getMessage(), e);
         }
     }

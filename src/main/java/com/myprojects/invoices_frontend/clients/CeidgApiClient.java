@@ -35,7 +35,9 @@ public class CeidgApiClient {
 
         try {
             CeidgApiDto resEntity = restTemplate.getForObject(url, CeidgApiDto.class);
-            CeidgApiDto newCeidgApiDto = new CeidgApiDto(resEntity.getFullName(), nip,
+            CeidgApiDto newCeidgApiDto = new CeidgApiDto(
+                    resEntity.getFullName(),
+                    nip,
                     resEntity.getStreet(),
                     resEntity.getBuilding(),
                     resEntity.getPostCode(),

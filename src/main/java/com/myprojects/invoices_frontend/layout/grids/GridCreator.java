@@ -1,12 +1,13 @@
 package com.myprojects.invoices_frontend.layout.grids;
 
-import com.myprojects.invoices_frontend.MainView;
 import com.myprojects.invoices_frontend.domain.Customers;
 import com.myprojects.invoices_frontend.domain.Invoices;
 import com.myprojects.invoices_frontend.domain.Products;
 import com.myprojects.invoices_frontend.domain.Users;
+import com.myprojects.invoices_frontend.layout.MainView;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
+import com.vaadin.flow.component.grid.Grid;
 
 public class GridCreator extends FormLayout {
 
@@ -16,15 +17,6 @@ public class GridCreator extends FormLayout {
         this.mainView = mainView;
     }
 
-    public void createCustomerGrid() {
-        mainView.gridCustomers.removeAllColumns();
-        mainView.gridCustomers.addColumn(Customers::getFullName).setHeader("Pełna nazwa");
-        mainView.gridCustomers.addColumn(Customers::getNip).setHeader("NIP");
-        mainView.gridCustomers.addColumn(Customers::getStreet).setHeader("Ulica");
-        mainView.gridCustomers.addColumn(Customers::getPostCode).setHeader("Kod pocztowy");
-        mainView.gridCustomers.addColumn(Customers::getTown).setHeader("Miejscowość");
-    }
-
     public void createSelectCustomerGrid() {
         mainView.gridSelectCustomer.removeAllColumns();
         mainView.gridSelectCustomer.addColumn(Customers::getFullName).setHeader("Pełna nazwa");
@@ -32,24 +24,14 @@ public class GridCreator extends FormLayout {
         mainView.gridSelectCustomer.addColumn(Customers::getStreet).setHeader("Ulica");
         mainView.gridSelectCustomer.addColumn(Customers::getPostCode).setHeader("Kod pocztowy");
         mainView.gridSelectCustomer.addColumn(Customers::getTown).setHeader("Miejscowość");
-    }
-
-    public void createProductGrid() {
-        mainView.gridProducts.removeAllColumns();
-        mainView.gridProducts.addColumn(Products::getName).setHeader("Nazwa");
-        mainView.gridProducts.addColumn(Products::getVatRate).setHeader("Stawka VAT")
-                .setTextAlign(ColumnTextAlign.END);
-        mainView.gridProducts.addColumn(Products::getNetPrice).setHeader("Cena netto")
-                .setTextAlign(ColumnTextAlign.END);
-        mainView.gridProducts.addColumn(Products::getVatValue).setHeader("VAT")
-                .setTextAlign(ColumnTextAlign.END);
-        mainView.gridProducts.addColumn(Products::getGrossPrice).setHeader("Cena brutto")
-                .setTextAlign(ColumnTextAlign.END);
+        mainView.gridSelectCustomer.addColumn(Customers::getMail).setHeader("E-mail");
     }
 
     public void createSelectProductGrid() {
         mainView.gridSelectProduct.removeAllColumns();
         mainView.gridSelectProduct.addColumn(Products::getName).setHeader("Nazwa");
+        mainView.gridSelectProduct.addColumn(Products::getPkwiu).setHeader("PKWiU");
+        mainView.gridSelectProduct.addColumn(Products::getMeasureUnit).setHeader("J.m.");
         mainView.gridSelectProduct.addColumn(Products::getVatRate).setHeader("Stawka VAT")
                 .setTextAlign(ColumnTextAlign.END);
         mainView.gridSelectProduct.addColumn(Products::getNetPrice).setHeader("Cena netto")
@@ -63,7 +45,7 @@ public class GridCreator extends FormLayout {
     public void createInvoiceGrid() {
         mainView.gridInvoices.removeAllColumns();
         mainView.gridInvoices.addColumn(Invoices::getNumber).setHeader("Numer");
-        mainView.gridInvoices.addColumn(Invoices::getFormattedDate).setHeader("Data");
+        mainView.gridInvoices.addColumn(Invoices::getDate).setHeader("Data");
         mainView.gridInvoices.addColumn(Invoices::getCustomer).setHeader("Kontrahent");
         mainView.gridInvoices.addColumn(Invoices::getGrossSum).setHeader("Wartość brutto")
                 .setTextAlign(ColumnTextAlign.END);
@@ -79,6 +61,9 @@ public class GridCreator extends FormLayout {
     public void createNewInvoiceProductsList() {
         mainView.gridNewInvoiceProductsList.removeAllColumns();
         mainView.gridNewInvoiceProductsList.addColumn(Products::getName).setHeader("Nazwa");
+        mainView.gridNewInvoiceProductsList.addColumn(Products::getQuantity).setHeader("Ilość");
+        mainView.gridNewInvoiceProductsList.addColumn(Products::getPkwiu).setHeader("PKWiU");
+        mainView.gridNewInvoiceProductsList.addColumn(Products::getMeasureUnit).setHeader("J.m.");
         mainView.gridNewInvoiceProductsList.addColumn(Products::getVatRate).setHeader("Stawka VAT")
                 .setTextAlign(ColumnTextAlign.END);
         mainView.gridNewInvoiceProductsList.addColumn(Products::getNetPrice).setHeader("Cena netto")
@@ -89,14 +74,22 @@ public class GridCreator extends FormLayout {
                 .setTextAlign(ColumnTextAlign.END);
     }
 
-    public void createUserGrid() {
-        mainView.gridUser.removeAllColumns();
-        mainView.gridUser.addColumn(Users::getFullName).setHeader("Pełna nazwa");
-        mainView.gridUser.addColumn(Users::getNip).setHeader("NIP");
-        mainView.gridUser.addColumn(Users::getStreet).setHeader("Ulica");
-        mainView.gridUser.addColumn(Users::getPostCode).setHeader("Kod pocztowy");
-        mainView.gridUser.addColumn(Users::getTown).setHeader("Miejscowość");
-        mainView.gridUser.addColumn(Users::isActive).setHeader("Domyślny");
+    public Grid<Products> createEditInvoiceProductsList() {
+        Grid<Products> newGrid = new Grid<>(Products.class);
+        newGrid.removeAllColumns();
+        newGrid.addColumn(Products::getName).setHeader("Nazwa");
+        newGrid.addColumn(Products::getQuantity).setHeader("Ilość");
+        newGrid.addColumn(Products::getPkwiu).setHeader("PKWiU");
+        newGrid.addColumn(Products::getMeasureUnit).setHeader("J.m.");
+        newGrid.addColumn(Products::getVatRate).setHeader("Stawka VAT")
+                .setTextAlign(ColumnTextAlign.END);
+        newGrid.addColumn(Products::getNetPrice).setHeader("Cena netto")
+                .setTextAlign(ColumnTextAlign.END);
+        newGrid.addColumn(Products::getVatValue).setHeader("VAT")
+                .setTextAlign(ColumnTextAlign.END);
+        newGrid.addColumn(Products::getGrossPrice).setHeader("Cena brutto")
+                .setTextAlign(ColumnTextAlign.END);
+        return newGrid;
     }
 
     public void createSelectUserGrid() {
@@ -107,5 +100,6 @@ public class GridCreator extends FormLayout {
         mainView.gridSelectUser.addColumn(Users::getPostCode).setHeader("Kod pocztowy");
         mainView.gridSelectUser.addColumn(Users::getTown).setHeader("Miejscowość");
         mainView.gridSelectUser.addColumn(Users::isActive).setHeader("Domyślny");
+        mainView.gridSelectUser.addColumn(Users::getBank).setHeader("Bank");
     }
 }

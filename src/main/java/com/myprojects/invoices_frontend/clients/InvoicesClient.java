@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -51,6 +52,9 @@ public class InvoicesClient {
             }
 
         } catch (RestClientException e) {
+            if(e.contains(ResourceAccessException.class)) {
+                LOGGER.error("No connection to database");
+            }
             LOGGER.error(e.getMessage(), e);
             return new ArrayList<>();
         }
@@ -67,9 +71,12 @@ public class InvoicesClient {
             HttpEntity<InvoicesDto> request = new HttpEntity<>(invoiceDto, headers);
             Invoices sentInvoice = restTemplate.postForObject(url, request, Invoices.class);
             if(sentInvoice != null) {
-                LOGGER.info("Invoice number " + sentInvoice.getNumber() + " has been correctly sent");
+                LOGGER.info("Invoice number " + sentInvoice.getNumber() + " has been correctly sent to database");
             }
         } catch (RestClientException e) {
+            if(e.contains(ResourceAccessException.class)) {
+                LOGGER.error("No connection to database");
+            }
             LOGGER.error(e.getMessage(), e);
         }
     }
@@ -87,6 +94,9 @@ public class InvoicesClient {
             restTemplate.exchange(url, HttpMethod.PUT, request, InvoicesDto.class);
             LOGGER.info("Invoice number " + invoicesDto.getNumber() + " has been updated");
         } catch (RestClientException e) {
+            if(e.contains(ResourceAccessException.class)) {
+                LOGGER.error("No connection to database");
+            }
             LOGGER.error(e.getMessage(), e);
         }
     }
@@ -99,8 +109,11 @@ public class InvoicesClient {
                 .toUri();
         try {
             restTemplate.delete(url);
-            LOGGER.info("Invoice number " + invoicesDto.getNumber() + "has been deleted");
+            LOGGER.info("Invoice number " + invoicesDto.getNumber() + " has been deleted");
         } catch (RestClientException e) {
+            if(e.contains(ResourceAccessException.class)) {
+                LOGGER.error("No connection to database");
+            }
             LOGGER.error(e.getMessage(), e);
         }
     }

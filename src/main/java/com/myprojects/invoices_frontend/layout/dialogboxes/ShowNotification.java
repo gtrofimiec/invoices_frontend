@@ -11,17 +11,27 @@ public class ShowNotification extends Div {
     String message;
     int duration;
 
+    public ShowNotification() {
+    }
+
     public ShowNotification(String message, int duration) {
         this.message = message;
         this.duration = duration;
         add(createButton());
-
     }
 
     private @NotNull Button createButton() {
         Button button = new Button();
         button.addClickListener(event -> show());
         return button;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public void show() {

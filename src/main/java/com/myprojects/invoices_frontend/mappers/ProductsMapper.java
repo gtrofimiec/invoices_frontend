@@ -15,6 +15,8 @@ public class ProductsMapper {
         return new Products(
                 productDto.getId(),
                 productDto.getName(),
+                productDto.getPkwiu(),
+                productDto.getMeasureUnit(),
                 productDto.getVatRate(),
                 productDto.getNetPrice(),
                 productDto.getVatValue(),
@@ -26,6 +28,8 @@ public class ProductsMapper {
         return new ProductsDto(
                 product.getId(),
                 product.getName(),
+                product.getPkwiu(),
+                product.getMeasureUnit(),
                 product.getVatRate(),
                 product.getNetPrice(),
                 product.getVatValue(),

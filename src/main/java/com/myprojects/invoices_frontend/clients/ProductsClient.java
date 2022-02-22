@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -51,6 +52,9 @@ public class ProductsClient {
             }
 
         } catch (RestClientException e) {
+            if(e.contains(ResourceAccessException.class)) {
+                LOGGER.error("No connection to database");
+            }
             LOGGER.error(e.getMessage(), e);
             return new ArrayList<>();
         }
@@ -70,6 +74,9 @@ public class ProductsClient {
                 LOGGER.info("Product " + sentProduct.getName() + " has been correctly sent");
             }
         } catch (RestClientException e) {
+            if(e.contains(ResourceAccessException.class)) {
+                LOGGER.error("No connection to database");
+            }
             LOGGER.error(e.getMessage(), e);
         }
     }
@@ -87,6 +94,9 @@ public class ProductsClient {
             restTemplate.exchange(url, HttpMethod.PUT, request, ProductsDto.class);
             LOGGER.info("Product " + productsDto.getName() + " has been updated");
         } catch (RestClientException e) {
+            if(e.contains(ResourceAccessException.class)) {
+                LOGGER.error("No connection to database");
+            }
             LOGGER.error(e.getMessage(), e);
         }
     }
@@ -99,8 +109,11 @@ public class ProductsClient {
                 .toUri();
         try {
             restTemplate.delete(url);
-            LOGGER.info("Product " + productsDto.getName() + "has been deleted");
+            LOGGER.info("Product " + productsDto.getName() + " has been deleted");
         } catch (RestClientException e) {
+            if(e.contains(ResourceAccessException.class)) {
+                LOGGER.error("No connection to database");
+            }
             LOGGER.error(e.getMessage(), e);
         }
     }

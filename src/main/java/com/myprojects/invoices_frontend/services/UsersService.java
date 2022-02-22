@@ -2,11 +2,13 @@ package com.myprojects.invoices_frontend.services;
 
 import com.myprojects.invoices_frontend.clients.UsersClient;
 import com.myprojects.invoices_frontend.domain.Users;
+import com.myprojects.invoices_frontend.layout.dialogboxes.ShowNotification;
 import com.myprojects.invoices_frontend.mappers.UsersMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -15,6 +17,7 @@ public class UsersService {
     private List<Users> usersList;
     private static UsersClient usersClient;
     private static UsersService usersService;
+    private static InvoicesService invoicesService = InvoicesService.getInstance();
     private static UsersMapper usersMapper = new UsersMapper();
 
     public UsersService(UsersClient usersClient) {
@@ -58,6 +61,13 @@ public class UsersService {
     }
 
     public void deleteUser(@NotNull Users user) {
-        usersClient.deleteUser(usersMapper.mapToUserDto(user));
+        if (invoicesService.getInvoicesList().stream()
+                .noneMatch(i -> Objects.equals(i.getUser().getId(), user.getId()))) {
+            usersClient.deleteUser(usersMapper.mapToUserDto(user));
+        } else {
+            ShowNotification cantBeDeleted = new ShowNotification("Nie można usunąć użytkownika "
+                    + user.getFullName() + ". Jest z nim powiązana wystawiona faktura!", 5000);
+            cantBeDeleted.show();
+        }
     }
 }
