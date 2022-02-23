@@ -43,7 +43,7 @@ public class MailClient {
             return true;
         } catch (RestClientException e) {
             if(e.contains(ResourceAccessException.class)) {
-                LOGGER.error("No connection to database");
+                LOGGER.error("E-mail sending error received!");
             }
             LOGGER.error(e.getMessage(), e);
             return false;

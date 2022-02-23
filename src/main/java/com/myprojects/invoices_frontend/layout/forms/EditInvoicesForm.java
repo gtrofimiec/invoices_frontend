@@ -367,8 +367,26 @@ public class EditInvoicesForm extends FormLayout {
     public void pdfGenerator(Invoices invoice) throws IOException, DocumentException {
         PdfGenerator pdfGenerator = new PdfGenerator(invoice);
         try {
+            File invoiceFile = new File(invoice.getUser().getPdfPath() + "/Faktura nr "
+                    + invoice.getNumber().replace("/", "_") + " z dnia "
+                    +  invoice.getDate() + ".pdf");
+            if(invoiceFile.exists()) {
+                invoiceFile.delete();
+            }
             pdfGenerator.generatePdf();
             isPdfGenerated = true;
+            ConfirmationDialog sendEmailDialog = new ConfirmationDialog();
+            sendEmailDialog.setTitle("");
+            sendEmailDialog.setQuestion("Czy wysłać fakturę mailem na domyślny adres?");
+            sendEmailDialog.addConfirmationListener(event -> {
+                try {
+                    sendMail();
+                } catch (DocumentException | IOException e) {
+                    e.printStackTrace();
+                }
+                sendEmailDialog.close();
+            });
+            sendEmailDialog.open();
         }  catch (IOException | DocumentException e) {
             e.printStackTrace();
         }
@@ -378,15 +396,20 @@ public class EditInvoicesForm extends FormLayout {
     public void sendMail() throws DocumentException, IOException {
         activeInvoice = mainView.gridInvoices.asSingleSelect().getValue();
         MailDto mailDto = new MailDto();
-        PdfGenerator pdfGenerator = new PdfGenerator(activeInvoice);
+        File invoiceFile = new File(activeInvoice.getUser().getPdfPath() + "/Faktura nr "
+                +  activeInvoice.getNumber().replace("/", "_") + " z dnia "
+                +  activeInvoice.getDate() + ".pdf");
+        if(!invoiceFile.exists()) {
+            PdfGenerator pdfGenerator = new PdfGenerator(activeInvoice);
+            invoiceFile = pdfGenerator.generatePdf();
+        }
         mailDto.setMailTo(activeInvoice.getCustomer().getMail());
-        mailDto.setSubject("Faktura VAT nr " + activeInvoice.getNumber()
-                + " z dnia " + activeInvoice.getDate());
-        mailDto.setMessage("W załączniku wysyłam fakturę VAT nr " + activeInvoice.getNumber() +
-                " z dnia " + activeInvoice.getDate());
-        File attachment = pdfGenerator.generatePdf();
-        mailDto.setInvoice(attachment);
-        mailDto.setAttachmentName(attachment.getName());
+        mailDto.setSubject("Faktura VAT nr " + activeInvoice.getNumber() + " z dnia "
+                + activeInvoice.getDate());
+        mailDto.setMessage("W załączniku wysyłam fakturę VAT nr " + activeInvoice.getNumber() + " z dnia "
+                + activeInvoice.getDate());
+        mailDto.setInvoice(invoiceFile);
+        mailDto.setAttachmentName(invoiceFile.getName());
 
         mailService.sendMail(mailDto);
     }

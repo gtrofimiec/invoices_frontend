@@ -21,10 +21,10 @@ public class ConfirmationDialog extends Dialog {
         createFooter();
     }
 
-    public ConfirmationDialog(String title, String content, ComponentEventListener listener) {
+    public ConfirmationDialog(String title, String question, ComponentEventListener listener) {
         this();
         setTitle(title);
-        setQuestion(content);
+        setQuestion(question);
         addConfirmationListener(listener);
     }
 
@@ -76,7 +76,6 @@ public class ConfirmationDialog extends Dialog {
         Button abort = new Button("Anuluj");
         abort.addClickListener(buttonClickEvent -> close());
         confirm = new Button("Potwierdź");
-//        confirm.addClickListener(buttonClickEvent -> close());
 
         HorizontalLayout footer = new HorizontalLayout();
         footer.add(abort, confirm);

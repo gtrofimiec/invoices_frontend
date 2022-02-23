@@ -31,5 +31,6 @@ public class MailService {
             isMailSent.setMessage("Podczas wysyłania maila wystapił błąd." +
                     " Sprawdź czy podano poprawny adres e-mail");
         }
+        isMailSent.show();
     }
 }
