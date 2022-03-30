@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'com.vaadin' version '0.14.6.0'
     id 'java'
+    id 'war'
 }
 
 group = 'com.myprojects'
@@ -28,6 +29,7 @@ dependencies {
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.56'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 }
 
 dependencyManagement {
