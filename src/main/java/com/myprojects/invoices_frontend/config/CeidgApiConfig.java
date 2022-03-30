@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CeidgApiConfig {
 
-    @Value("http://localhost:8081/v1/invoices/getData/")
+    @Value("${endpoint_ceidg}")
     private String ceidgApiEndpoint;
 
     public String getCeidgApiEndpoint() {

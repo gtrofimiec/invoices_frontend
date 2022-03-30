@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MailConfig {
 
-    @Value("http://localhost:8081/v1/invoices/mail")
+    @Value("${endpoint_mail}")
     private String mailEndpoint;
 
     public String getMailEndpoint() {

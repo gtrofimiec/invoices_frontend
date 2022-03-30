@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomersConfig {
 
-    @Value("http://localhost:8081/v1/invoices/customers")
+    @Value("${endpoint_customers}")
     private String customersEndpoint;
 
     public String getCustomersEndpoint() {

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PostcodeApiConfig {
 
-    @Value("http://localhost:8081/v1/invoices/getTown/")
+    @Value("${endpoint_postcode}")
     private String postcodeApiEndpoint;
 
     public String getPostcodeApiEndpoint() {
