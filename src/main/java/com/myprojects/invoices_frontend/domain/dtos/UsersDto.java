@@ -25,6 +25,10 @@ public class UsersDto {
     @JsonProperty
     private String pdfPath;
     @JsonProperty
+    private String userLogin;
+    @JsonProperty
+    private String userPass;
+    @JsonProperty
     private boolean active;
     @JsonProperty
     private List<InvoicesDto> invoicesDtoList;
@@ -38,7 +42,8 @@ public class UsersDto {
     }
 
     public UsersDto(Long id, String fullName, String nip, String street, String postCode, String town,
-                    String bank, String accountNumber, String pdfPath, boolean active) {
+                    String bank, String accountNumber, String pdfPath, String userLogin, String userPass,
+                    boolean active) {
         this.id = id;
         this.fullName = fullName;
         this.nip = nip;
@@ -48,6 +53,8 @@ public class UsersDto {
         this.bank = bank;
         this.accountNumber = accountNumber;
         this.pdfPath = pdfPath;
+        this.userLogin = userLogin;
+        this.userPass = userPass;
         this.active = active;
     }
 
@@ -121,6 +128,22 @@ public class UsersDto {
 
     public void setPdfPath(String pdfPath) {
         this.pdfPath = pdfPath;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
+    }
+
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
+    }
+
+    public String getUserPass() {
+        return userPass;
+    }
+
+    public void setUserPass(String userPass) {
+        this.userPass = userPass;
     }
 
     public boolean isActive() {

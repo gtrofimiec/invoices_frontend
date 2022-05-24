@@ -20,6 +20,8 @@ public class UsersMapper {
                 userDto.getBank(),
                 userDto.getAccountNumber(),
                 userDto.getPdfPath(),
+                userDto.getUserLogin(),
+                userDto.getUserPass(),
                 userDto.isActive()
         );
     }
@@ -35,6 +37,8 @@ public class UsersMapper {
                 user.getBank(),
                 user.getAccountNumber(),
                 user.getPdfPath(),
+                user.getUserLogin(),
+                user.getUserPass(),
                 user.isActive()
         );
     }
